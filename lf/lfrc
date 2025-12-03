@@ -1,0 +1,184 @@
+# =========================
+# lf configuration (Vim-first, no override of built-in 'open')
+# =========================
+set shell sh       # or bash/zsh, but sh is enough
+set ifs "\n"       # recommended by lf docs for $fx and $fs
+
+# ---- General UI ----
+# set hidden!            # set if you want hidden files to be ON at start
+set drawbox
+set info ""
+# ---- Previewer (optional) ----
+set preview true
+set previewer ~/.config/lf/preview.sh
+set cleaner   ~/.config/lf/cleaner.sh
+
+# Status/info line
+set info size:time 
+
+
+# ---- Editors / Openers ----
+# Explicit edit: always Vim (or $EDITOR if set to vim)
+cmd edit ${{
+    ${EDITOR:-vim} -- "$f"
+}}
+
+# DO NOT override built-in 'open'.
+# External opener for non-text:
+cmd open-external ${{
+    xdg-open "$f" >/dev/null 2>&1 &
+}}
+
+# Smart-open: Vim for text; external for others
+cmd open-smart ${{
+    case "$(file --brief --mime-type -- "$f")" in
+        text/*|application/json|application/xml)
+            ${EDITOR:-vim} -- "$f"
+            ;;
+        *)
+            xdg-open "$f" >/dev/null 2>&1 &
+            ;;
+    esac
+}}
+
+# ---- Delete (Trash + Permanent) ----
+cmd trash ${{
+    trash-put -- $fx
+}}
+cmd delete ${{
+    printf "Permanently delete %s? [y/N] " "$fx"
+    read ans
+    [ "$ans" = "y" ] && rm -rf -- $fx
+}}
+
+# ---- Clipboard helpers ----
+cmd yank-path ${{
+    printf "%s" "$pwd/$f" | xclip -selection clipboard
+}}
+cmd yank-files ${{
+    printf "%s\n" $fx | xclip -selection clipboard
+}}
+
+# ---- Create files / folders ----
+cmd mkfile ${{
+    printf "File name: "
+    read name
+    [ -n "$name" ] && : > "$name"
+}}
+cmd mkdirp ${{
+    printf "Folder path: "
+    read name
+    [ -n "$name" ] && mkdir -p -- "$name"
+}}
+
+# ---- Rename (single + bulk via vidir) ----
+cmd rename ${{
+    printf "New name for %s: " "$f"
+    read name
+    [ -n "$name" ] && mv -- "$f" "$name"
+}}
+cmd bulkrename ${{
+    printf "%s\n" $fx | vidir -
+}}
+
+# ---- Archives ----
+cmd extract ${{
+    case "$f" in
+        *.tar.gz|*.tgz) tar xzf -- "$f" ;;
+        *.tar.bz2)      tar xjf -- "$f" ;;
+        *.tar.xz)       tar xJf -- "$f" ;;
+        *.zip)          unzip -q -- "$f" ;;
+        *.rar)          unrar x -o+ -- "$f" ;;
+        *.7z)           7z x -- "$f" ;;
+        *)              echo "Unsupported archive" ;;
+    esac
+}}
+cmd zipit ${{
+    printf "Archive name (without .zip): "
+    read z
+    [ -n "$z" ] && zip -r "$z.zip" -- $fx
+}}
+
+# ---- Search / Filter ----
+cmd fzf ${{
+    fdfind -H . | fzf --height=100% --reverse --bind 'enter:print-query' | while read -r p; do
+        lf -remote "send $id select \"$p\"; send $id open"
+    done
+}}
+cmd rgs ${{
+    printf "ripgrep pattern: "
+    read p
+    [ -n "$p" ] && rg -n --hidden --line-number "$p" | less -R
+}}
+
+# ---- Sort toggles ----
+cmd sort-name ${{
+    set sortby name; set reverse false
+}}
+cmd sort-size ${{
+    set sortby size; set reverse false
+}}
+cmd sort-time ${{
+    set sortby time; set reverse true
+}}
+
+# =========================
+# Keymaps
+# =========================
+
+# Navigation (Vim-like)
+map h updir          # ← go to parent directory
+map j down           # ↓ move cursor down
+map k up             # ↑ move cursor up
+map l open           # → built-in open: enter directory / open file inside lf
+
+map <enter> open     # built-in open (no Dolphin)
+map . set hidden!    # toggle dotfiles
+map C reload
+map H top
+map L bottom
+map <esc> clear      # cancel filter
+
+# Edit / Open
+map e edit           # force Vim
+map o open-smart     # smart open (vim for text, external for others)
+# If you want a key for always external:
+# map O open-external
+
+# Delete: safe trash on 'd', permanent on 'D'
+map dt trash
+map D delete
+
+# Copy / Cut / Paste (lf built-ins)
+map yy copy
+map x cut
+map pp paste
+
+# Paths to clipboard
+map yp yank-path
+map yP yank-files
+
+# New file/folder
+map nf mkfile
+map nd mkdirp
+
+# Rename
+map r rename
+map R bulkrename
+
+# Quick jumps
+map gh cd ~
+map g/ cd /
+map gp cd ~/Pictures
+map gd cd ~/Downloads
+map gw cd ~/Documents
+
+# Sorts
+map sn sort-name
+map ss sort-size
+map st sort-time
+
+# Find + filter
+map / filter
+map \ fzf
+map ? rgs
