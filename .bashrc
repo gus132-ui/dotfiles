@@ -10,19 +10,20 @@ esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoreboth:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=50000
+HISTFILESIZE=100000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-
+# history-a writes current session's new commands to disk immediately; history -n reads new commands written by other shells into memory.
+PROMPT_COMMAND='history -a; history -n'
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
@@ -96,7 +97,7 @@ alias pl='setxkbmap -layout pl'
 alias en='setxkbmap -layout us'
 alias shred='shred -v -z -u -n'
 alias pw='pwgen -sy'
-alias tn='task next'
+alias tn='clear; task next'
 alias clock='tty-clock -c -D -C 3'
 alias exall='exiftool -all= -overwrite_original'
 alias uu='sudo apt update && sudo apt upgrade'
@@ -108,13 +109,15 @@ alias argos='/home/lukasz/venv-argos/bin/argos-translate'
 alias mi='micro'
 alias shield='bash ssd_rclone_rsync_backup.sh'
 alias usb='bash flash_rsync_backup.sh'
-alias diceware='diceware-cli generate --separator="" --remove-number --size=6'
 alias bat='batcat'
 alias fd='fdfind'
 alias cdwm='vim ~/dwm/config.h'
 alias mdwm='cd ~/dwm; sudo make clean install; cd -'
 alias cst='vim ~/build/st/config.h'
 alias mst='cd ~/build/st; sudo make clean install; cd -'
+alias work-on='sudo cryptsetup open ~/secure/work_vault.img work_vault && sudo mount /dev/mapper/work_vault ~/work_vault'
+alias work-off='sudo umount ~/work_vault && sudo cryptsetup close work_vault'
+alias ncdu='ncdu --color dark'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
