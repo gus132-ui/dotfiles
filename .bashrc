@@ -93,7 +93,7 @@ alias ll='ls -lh'
 alias l='ls -CF'
 alias la='ls -a'
 alias lr='ls --recursive'
-alias lt='ls --sort=time'
+alias lt='ls --sort=time -l'
 alias tldr='tldr --color=always --pager'
 alias pl='setxkbmap -layout pl'
 alias en='setxkbmap -layout us'
@@ -120,6 +120,7 @@ alias mst='cd ~/build/st; sudo make clean install; cd -'
 alias work-on='sudo cryptsetup open ~/secure/work_vault.img work_vault && sudo mount /dev/mapper/work_vault ~/work_vault'
 alias work-off='sudo umount ~/work_vault && sudo cryptsetup close work_vault'
 alias ncdu='ncdu --color dark'
+alias mp='ncmpcpp'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.

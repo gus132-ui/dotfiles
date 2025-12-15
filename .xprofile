@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# GTK Gruvbox Dark theme
+export GTK_THEME="Gruvbox-Dark"
+export GTK_APPLICATION_PREFER_DARK_THEME=1
+
+# Qt Gruvbox (Kvantum theme)
+# export QT_STYLE_OVERRIDE=kvantum
+
+# Optional: consistent cursor theme
+export XCURSOR_THEME="Adwaita"
+export XCURSOR_SIZE=24
+
