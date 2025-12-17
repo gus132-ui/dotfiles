@@ -10,6 +10,7 @@ esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
+
 HISTCONTROL=ignoreboth:erasedups
 
 # append to the history file, don't overwrite it
@@ -76,19 +77,23 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
+    alias ls='ls --color=auto -hF'
     #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
-    #alias grep='grep --color=auto'
+    alias grep='grep --color=auto'
     #alias fgrep='fgrep --color=auto'
     #alias egrep='egrep --color=auto'
+    alias diff='diff --color=auto'
 fi
 
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
+alias histoff='set +o history'
+alias histon='set -o history'
+alias ..='cd ..'
+alias ...='cd ../..'
 alias ll='ls -lh'
 alias l='ls -CF'
 alias la='ls -a'
@@ -121,6 +126,9 @@ alias work-on='sudo cryptsetup open ~/secure/work_vault.img work_vault && sudo m
 alias work-off='sudo umount ~/work_vault && sudo cryptsetup close work_vault'
 alias ncdu='ncdu --color dark'
 alias mp='ncmpcpp'
+alias v='vim'
+alias tree='tree -C -L 2 --dirsfirst'
+alias sc='sc-im'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -141,6 +149,48 @@ if ! shopt -oq posix; then
   fi
 fi
 export LANGUAGE=en_US
+export GPG_TTY="$(tty)"
+gpg-connect-agent updatestartuptty /bye >/dev/null
+
 # Use full-featured terminfo for st
 # [ -z "$TMUX" ] && export TERM=st-256color
+export LESS='-NR --mouse'
+export LESSHISTFILE=-
+export LESS_TERMCAP_md=$'\e[1;36m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;37m'
+export LESS_TERMCAP_se=$'\e[0m'
+
+export BAT=batcat
+export FZF_DEFAULT_OPTS="
+--height=80%
+--layout=reverse
+--border
+--info=inline
+--preview '${BAT} --style=numbers --color=always --line-range :200 {} 2>/dev/null'
+--preview-window=right:60%:wrap
+"
+
+
+cdi() {
+  local dirs i sel
+  mapfile -t dirs < <(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+  ((${#dirs[@]})) || { echo "No subdirectories."; return 1; }
+
+  for i in "${!dirs[@]}"; do printf "%3d) %s\n" "$((i+1))" "${dirs[i]}"; done
+  read -r -p "Select: " sel
+  [[ "$sel" =~ ^[0-9]+$ ]] && ((sel>=1 && sel<=${#dirs[@]})) || return 1
+
+  cd -- "${dirs[sel-1]}" && ls
+}
+
+cdf() {
+  local d
+  d="$(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort | fzf)" || return
+  cd -- "$d" && ls
+}
+
+fo() {
+  find . -type f 2>/dev/null | fzf --bind "enter:execute(xdg-open {})"
+}
 
