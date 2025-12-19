@@ -1,6 +1,8 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+#        __               __
+#       / /_  ____ ______/ /_  __________
+#      / __ \/ __ `/ ___/ __ \/ ___/ ___/
+#  _  / /_/ / /_/ (__  ) / / / /  / /__
+# ( _)_.___/\__,_/____/_/ /_/_/   \___/
 
 # If not running interactively, don't do anything
 case $- in
@@ -19,7 +21,7 @@ shopt -s histappend
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=50000
 HISTFILESIZE=100000
-
+HISTIGNORE='pass *'
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -78,8 +80,8 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto -hF'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
+    alias dir=' eza -l --no-permissions --no-user --time-style=relative --sort=modified -r --only-dirs'
+    alias vdir='eza -l --header --time-style=long-iso --only-dirs --sort=modified -r'
 
     alias grep='grep --color=auto'
     #alias fgrep='fgrep --color=auto'
@@ -96,7 +98,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ll='ls -lh'
 alias l='ls -CF'
-alias la='ls -a'
+alias la='ls -a --group-directories-first'
 alias lr='ls --recursive'
 alias lt='ls --sort=time -l'
 alias tldr='tldr --color=always --pager'
@@ -127,8 +129,11 @@ alias work-off='sudo umount ~/work_vault && sudo cryptsetup close work_vault'
 alias ncdu='ncdu --color dark'
 alias mp='ncmpcpp'
 alias v='vim'
-alias tree='tree -C -L 2 --dirsfirst'
+alias tree='eza --tree -L 2'
 alias sc='sc-im'
+alias viba='vim ~/.bashrc'
+alias soba='source ~/.bashrc'
+alias elf='eza --only-files --icons -l --sort=modified --time-style=relative -r'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -170,27 +175,7 @@ export FZF_DEFAULT_OPTS="
 --preview '${BAT} --style=numbers --color=always --line-range :200 {} 2>/dev/null'
 --preview-window=right:60%:wrap
 "
+# Load custom functions (if present)
+[ -r "$HOME/.config/shell/functions.sh" ] && . "$HOME/.config/shell/functions.sh"
 
-
-cdi() {
-  local dirs i sel
-  mapfile -t dirs < <(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
-  ((${#dirs[@]})) || { echo "No subdirectories."; return 1; }
-
-  for i in "${!dirs[@]}"; do printf "%3d) %s\n" "$((i+1))" "${dirs[i]}"; done
-  read -r -p "Select: " sel
-  [[ "$sel" =~ ^[0-9]+$ ]] && ((sel>=1 && sel<=${#dirs[@]})) || return 1
-
-  cd -- "${dirs[sel-1]}" && ls
-}
-
-cdf() {
-  local d
-  d="$(find . -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort | fzf)" || return
-  cd -- "$d" && ls
-}
-
-fo() {
-  find . -type f 2>/dev/null | fzf --bind "enter:execute(xdg-open {})"
-}
 
