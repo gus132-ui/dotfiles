@@ -24,12 +24,12 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 " ----- Vimwiki -----
 let g:vimwiki_list = [{
   \ 'path': '~/vimwiki/',
-  \ 'syntax': 'default',
-  \ 'ext': '.wiki'
+  \ 'syntax': 'markdown',
+  \ 'ext': '.md'
   \ }]
 augroup vimwiki_no_numbers_index
   autocmd!
-  autocmd FileType vimwiki if expand('%:t') ==# 'index.wiki' |
+  autocmd FileType vimwiki if expand('%:t') ==# 'index.md' |
 			  \ setlocal nonumber norelativenumber |
 			  \ endif
 augroup END

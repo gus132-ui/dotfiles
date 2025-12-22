@@ -1,8 +1,8 @@
-#        __               __
-#       / /_  ____ ______/ /_  __________
-#      / __ \/ __ `/ ___/ __ \/ ___/ ___/
-#  _  / /_/ / /_/ (__  ) / / / /  / /__
-# ( _)_.___/\__,_/____/_/ /_/_/   \___/
+#         __               __
+#        / /_  ____ ______/ /_  __________
+#       / __ \/ __ `/ ___/ __ \/ ___/ ___/
+#   _   / /_/ / /_/ (__  ) / / / /  / /__
+#  ( _)_.___/\__,_/____/_/ /_/_/   \___/
 
 # If not running interactively, don't do anything
 case $- in
@@ -30,6 +30,9 @@ PROMPT_COMMAND='history -a; history -n'
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
+eval "$(zoxide init bash)"
+source ~/.local/share/blesh/ble.sh
+eval "$(atuin init bash)"
 
 # make less more friendly for non-text input files, see lesspipe(1)
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -94,6 +97,7 @@ fi
 
 alias histoff='set +o history'
 alias histon='set -o history'
+alias cd='z'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ll='ls -lh'
@@ -134,6 +138,8 @@ alias sc='sc-im'
 alias viba='vim ~/.bashrc'
 alias soba='source ~/.bashrc'
 alias elf='eza --only-files --icons -l --sort=modified --time-style=relative -r'
+alias clip='xclip -selection clipboard'
+alias bm='bashmount'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -179,3 +185,7 @@ export FZF_DEFAULT_OPTS="
 [ -r "$HOME/.config/shell/functions.sh" ] && . "$HOME/.config/shell/functions.sh"
 
 
+
+source /home/lukasz/.config/broot/launcher/bash/br
+export PATH="$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.cargo/bin:$PATH"
