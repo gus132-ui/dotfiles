@@ -10,8 +10,10 @@ case $- in
       *) return;;
 esac
 
+set -o vi
+export KEYTIMEOUT=1
+
 # don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
 
 HISTCONTROL=ignoreboth:erasedups
 
@@ -27,12 +29,33 @@ HISTIGNORE='pass *'
 shopt -s checkwinsize
 # history-a writes current session's new commands to disk immediately; history -n reads new commands written by other shells into memory.
 PROMPT_COMMAND='history -a; history -n'
+
+# fzf
+if [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+  source /usr/share/doc/fzf/examples/key-bindings.bash
+fi
+
+if [ -f /usr/share/doc/fzf/examples/completion.bash ]; then
+  source /usr/share/doc/fzf/examples/completion.bash
+fi
+
+# fasd: recency-first, minimal noise
+export _FASD_WEIGHT_TIME=1        # recency dominates
+export _FASD_WEIGHT_FREQ=0       # ignore frequency
+export _FASD_MAX_SCORE=2000
+export _FASD_TRACK_FILES=1
+export _FASD_TRACK_DIRS=1
+export _FASD_BLACKLIST="^/(tmp|var/tmp|proc|sys|dev|run)|/\.cache/"
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
 eval "$(zoxide init bash)"
 source ~/.local/share/blesh/ble.sh
 eval "$(atuin init bash)"
+eval "$(fasd --init bash)"
+
+# fzf history on Alt-R (keeps Ctrl-R for atuin)
+bind '"\er": " \C-u$(__fzf_history__)\e\C-e"'
 
 # make less more friendly for non-text input files, see lesspipe(1)
 #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -140,6 +163,10 @@ alias soba='source ~/.bashrc'
 alias elf='eza --only-files --icons -l --sort=modified --time-style=relative -r'
 alias clip='xclip -selection clipboard'
 alias bm='bashmount'
+alias dr='fasd -d -R'            # recent directories
+alias fr='fasd -f -R'            # recent files (paths only)
+alias vr='fasd -f -R -e vim'     # open recent file in vim
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -189,3 +216,6 @@ export FZF_DEFAULT_OPTS="
 source /home/lukasz/.config/broot/launcher/bash/br
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
+export GPG_TTY=$(tty)
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+
