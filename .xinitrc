@@ -26,6 +26,10 @@ xsetroot -cursor_name left_ptr &
 # Touchpad on the laptop disabled as it's behaving erratically sometimes. The red TrackPoint can be used instead. 
 xinput disable $(xinput list | awk -F'[=]' '/Touchpad|TouchPad|ELAN/{print $2; exit}')
 
+# Espanso (start inside X session)
+pkill -f espanso >/dev/null 2>&1
+espanso daemon >/tmp/espanso.log 2>&1 &
+
 
 # Start window manager
 exec dwm
