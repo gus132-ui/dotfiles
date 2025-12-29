@@ -148,3 +148,31 @@ faf() {
   vim -- "$file"
 }
 
+esp() {
+  local dir="${XDG_CONFIG_HOME:-$HOME/.config}/espanso/match"
+         rg -n '^\s*-\s*trigger:' "$dir" \
+  | sed -E 's/^([^:]+):([0-9]+):\s*-\s*trigger:\s*"?([^"]+)"?.*/\3\t\1\t\2/' \
+  | fzf --delimiter=$'\t' --with-nth=1 \
+        --prompt="espanso triggers> " \
+        --preview-window=right:70%:wrap \
+        --preview '
+          file={2}
+          line={3}
+
+          if command -v bat >/dev/null 2>&1; then
+            PAGER=bat
+          elif command -v batcat >/dev/null 2>&1; then
+            PAGER=batcat
+          else
+            PAGER="sed -n 1,300p"
+          fi
+
+          awk -v start="$line" "
+            NR < start { next }
+            NR == start { p=1 }
+            p && /^\s*-\s*trigger:/ && NR>start { exit }
+            p { print }
+          " "$file" | eval "$PAGER --style=plain --color=always"
+        '
+}
+
