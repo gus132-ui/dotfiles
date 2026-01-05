@@ -4,7 +4,8 @@
 eval "$(dbus-launch --sh-syntax)" &
 
 # Start GNOME keyring for SecretService
-gnome-keyring-daemon --start --components=secrets,ssh &
+eval "$(gnome-keyring-daemon --start --components=secrets,ssh)"
+export SSH_AUTH_SOCK
 
 # Wait for Xorg to finish detecting monitors
 sleep 1

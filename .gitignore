@@ -1,0 +1,81 @@
+### ===== Editors =====
+
+# Vim
+*.swp
+*.swo
+*.swn
+*.swm
+*.un~
+Session.vim
+.netrwhist
+tags
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
+*.iml
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+
+### ===== OS =====
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+### ===== Build / Artifacts =====
+
+/dist/
+/build/
+/out/
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+### ===== Logs & Temp =====
+
+*.log
+*.tmp
+*.temp
+.cache/
+.tmp/
+
+### ===== Dependencies =====
+
+node_modules/
+vendor/
+.env
+.env.*
+
+### ===== Python =====
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+
+### ===== Misc =====
+
+coverage/
+.nyc_output/
+

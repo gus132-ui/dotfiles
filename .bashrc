@@ -27,7 +27,8 @@ HISTIGNORE='pass *'
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-# history-a writes current session's new commands to disk immediately; history -n reads new commands written by other shells into memory.
+# history-a writes current session's new commands to disk immediately; 
+# history -n reads new commands written by other shells into memory.
 PROMPT_COMMAND='history -a; history -n'
 
 # fzf
@@ -151,14 +152,14 @@ alias work-off='sudo umount ~/work_vault && sudo cryptsetup close work_vault'
 alias ncdu='ncdu --color dark'
 alias mp='ncmpcpp'
 alias v='vim'
-alias tree='eza --tree -L 2'
+alias tree='eza --tree -L 2 --group-directories-first'
 alias sc='sc-im'
 alias viba='vim ~/.bashrc'
 alias soba='source ~/.bashrc'
 alias elf='eza --only-files --icons -l --sort=modified --time-style=relative -r'
 alias clip='xclip -selection clipboard'
 alias bm='bashmount'
-
+alias wttr='curl wttr.in/50.017077345305175,21.752692000917033'
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -210,4 +211,5 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export GPG_TTY=$(tty)
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
