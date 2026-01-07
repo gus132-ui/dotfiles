@@ -1,17 +1,13 @@
-#         __               __
-#        / /_  ____ ______/ /_  __________
-#       / __ \/ __ `/ ___/ __ \/ ___/ ___/
-#   _   / /_/ / /_/ (__  ) / / / /  / /__
-#  ( _)_.___/\__,_/____/_/ /_/_/   \___/
+#    __            __
+#   / /  ___ ____ / /  ________
+#  / _ \/ _ `(_-</ _ \/ __/ __/
+# /_.__/\_,_/___/_//_/_/  \__/
 
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
-
-set -o vi
-export KEYTIMEOUT=1
 
 # don't put duplicate lines or lines starting with space in the history.
 

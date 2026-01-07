@@ -1,9 +1,9 @@
-"         _
-"  _   __(_)___ ___  __________
-" | | / / / __ `__ \/ ___/ ___/
-" | |/ / / / / / / / /  / /__
-" |___/_/_/ /_/ /_/_/   \___/
+"        _
+"  _  __(_)_ _  ________
+" | |/ / /  ' \/ __/ __/
+" |___/_/_/_/_/_/  \__/
 
+" === SETTINGS ===
 set encoding=utf-8
 set number
 set nocompatible
@@ -21,6 +21,9 @@ set history=3000
 set wildmenu
 set background=dark
 set colorcolumn=81
+set undofile
+set undodir=~/.vim/undodir
+
 	
 " === KEY BINDINGS ===
 nnoremap <leader>v :edit $MYVIMRC<CR>
@@ -37,6 +40,9 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 nnoremap <leader>hl :set hlsearch!<CR>
 nnoremap <leader>F :%!fmt -w 80<CR>
 vnoremap <leader>f :!fmt -w 80<CR>
+nnoremap <leader>rl :call RelLink()<CR>
+nnoremap <leader>bl :call Backlinks()<CR>
+nnoremap <leader>u :UndotreeToggle<CR>
 
 " === PERSISTENT MACORS ===
 
@@ -49,6 +55,9 @@ Plug 'morhetz/gruvbox'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'kshenoy/vim-signature'
+Plug 'tpope/vim-surround'
+Plug 'mbbill/undotree'
+Plug 'wellle/targets.vim'
 call plug#end()
 
 colorscheme gruvbox
@@ -241,4 +250,78 @@ endfunction
 
 command! DiaryToday call DiaryTodayAndIndex()
 command! DiaryYearIndex execute 'edit ' . expand('~/vimwiki/diary/') . strftime('%Y') . '/index.md'
+
+" =========================================================
+" Markdown link generator: insert [label](relative/path.md)
+" =========================================================
+function! RelLink() abort
+  " Pick target file (tab-complete works)
+  let l:target = input('Target file: ', '', 'file')
+  if empty(l:target)
+    echo "RelLink: cancelled"
+    return
+  endif
+
+  " Absolute paths
+  let l:from_dir = expand('%:p:h')
+  let l:to_abs   = fnamemodify(l:target, ':p')
+
+  " Fallback if buffer has no directory yet (new/unnamed file)
+  if empty(l:from_dir)
+    let l:from_dir = getcwd()
+  endif
+
+  " Compute relative path using python (robust across paths)
+  let l:py = 'python3 - <<''PY'''. "\n"
+        \ . 'import os, sys' . "\n"
+        \ . 'from_dir = r''' . substitute(l:from_dir, '''', '''''', 'g') . '''' . "\n"
+        \ . 'to_abs   = r''' . substitute(l:to_abs,   '''', '''''', 'g') . '''' . "\n"
+        \ . 'print(os.path.relpath(to_abs, from_dir))' . "\n"
+        \ . 'PY' . "\n"
+
+  let l:rel = trim(system(l:py))
+  if v:shell_error || empty(l:rel)
+    echoerr "RelLink: failed to compute relative path"
+    return
+  endif
+
+  " Default label = filename without extension
+  let l:label = fnamemodify(l:target, ':t:r')
+
+  " Insert at cursor
+  execute "normal! i[" . l:label . "](" . l:rel . ")"
+endfunction
+
+nnoremap <leader>rl :call RelLink()<CR>
+
+
+" =========================================================
+" Backlinks: show files that link to current note
+" Requires: ripgrep + fzf + fzf.vim
+" =========================================================
+function! Backlinks() abort
+  " Current file basename (e.g., grace.md)
+  let l:target = expand('%:t')
+  if empty(l:target)
+    echoerr "Backlinks: current buffer has no filename"
+    return
+  endif
+
+  " Vault root (adjust if your vault path differs)
+  let l:root = expand('~/vimwiki')
+
+  " Search for markdown links that point to .../<target>
+  " Matches: ](something/target.md) and ](target.md)
+  let l:pattern = '\]\([^)#]*' . escape(l:target, '\.^$~[]') . '\)'
+
+  " Use fzf.vim grep with preview
+  call fzf#vim#grep(
+        \ 'rg --line-number --no-heading --smart-case ' . shellescape(l:pattern) . ' ' . shellescape(l:root),
+        \ 1,
+        \ fzf#vim#with_preview(),
+        \ 0
+        \ )
+endfunction
+
+nnoremap <leader>bl :call Backlinks()<CR>
 
