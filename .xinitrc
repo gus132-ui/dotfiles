@@ -26,6 +26,8 @@ xsetroot -cursor_name left_ptr &
 
 # Touchpad on the laptop disabled as it's behaving erratically sometimes. The red TrackPoint can be used instead. 
 xinput disable $(xinput list | awk -F'[=]' '/Touchpad|TouchPad|ELAN/{print $2; exit}')
+# GTK / XSettings bridge (for LibreOffice, GTK apps)
+xsettingsd &
 
 # Espanso (start inside X session)
 pkill -f espanso >/dev/null 2>&1

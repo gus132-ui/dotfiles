@@ -30,16 +30,15 @@ nnoremap <leader>v :edit $MYVIMRC<CR>
 nnoremap <leader>s :source $MYVIMRC<CR>
 nnoremap <leader>wf :WikiFiles<CR>
 nnoremap <leader>ws :WikiSearch<CR>
-nnoremap <leader><leader> <C-^>
 nnoremap <Leader>ma :SignatureToggleSigns<CR>
-nnoremap <leader>ff :Files<CR>
+nnoremap <leader>f :Files<CR>
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>h :History<CR>
+nnoremap <leader>hi :History<CR>
 nnoremap <leader>rg :Rg<CR>
 nnoremap <leader>n :NERDTreeToggle<CR>
 nnoremap <leader>hl :set hlsearch!<CR>
-nnoremap <leader>F :%!fmt -w 80<CR>
-vnoremap <leader>f :!fmt -w 80<CR>
+nnoremap <leader>J :%!fmt -w 80<CR>
+vnoremap <leader>j :!fmt -w 80<CR>
 nnoremap <leader>rl :call RelLink()<CR>
 nnoremap <leader>bl :call Backlinks()<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
