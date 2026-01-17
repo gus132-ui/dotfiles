@@ -13,9 +13,9 @@ sleep 1
 # Monitor layout – single source of truth
 xrandr --output HDMI-2 --auto --left-of eDP-1
 xrandr --output eDP-1 --primary
-
 # ProtonVPN GUI (optional)
-protonvpn-app --minimized &
+command -v protonvpn-app >/dev/null 2>&1 && protonvpn-app --minimized &
+
 # Notification daemon
 dunst &
 # Cursor + Xresources

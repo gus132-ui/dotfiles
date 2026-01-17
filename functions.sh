@@ -39,7 +39,23 @@ cds() {
 # === fo - find and open ===
 # Search for a file interactively and execute it
 fo() {
-  find . -type f 2>/dev/null | fzf --bind "enter:execute(xdg-open {})"
+  local file
+  file="$(
+    find . -type f 2>/dev/null |
+    fzf --preview 'batcat --style=numbers --color=always --line-range=:300 {}'
+  )" || return
+  [[ -n "$file" ]] && vim -- "$file"
+}
+# Uses fasd to show you the most recently accessed files and then open them with vim
+fr() {
+  local file
+  file="$(
+    fasd -f -r |
+    awk '{print $NF}' |
+    fzf --tac --preview 'batcat --style=numbers --color=always --line-range=:300 {}'
+  )" || return
+
+  [[ -n "$file" ]] && vim -- "$file"
 }
 
 # Directory marks (vifm-style)
