@@ -117,8 +117,8 @@ gpg-connect-agent updatestartuptty /bye >/dev/null
 export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 
 # ---- Aliases ----
-if [[ -r "$HOME/aliases.zsh" ]]; then
-  source "$HOME/aliases.zsh"
+if [[ -r "$HOME/.zsh_aliases" ]]; then
+  source "$HOME/.zsh_aliases"
 fi
 
 # ---- custom functions ----
