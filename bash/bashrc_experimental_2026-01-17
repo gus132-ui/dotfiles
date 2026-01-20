@@ -1,0 +1,168 @@
+#    __            __
+#   / /  ___ ____ / /  ________
+#  / _ \/ _ `(_-</ _ \/ __/ __/
+# /_.__/\_,_/___/_//_/_/  \__/
+
+# --- Interactive shell guard ---
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+
+# --- History ---
+HISTCONTROL=ignoreboth:erasedups
+HISTSIZE=50000
+HISTFILESIZE=100000
+HISTIGNORE='pass *'
+shopt -s histappend checkwinsize
+
+# Append + read shared history safely
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a; history -n"
+
+# --- fzf ---
+if [ -r /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+  source /usr/share/doc/fzf/examples/key-bindings.bash
+fi
+if [ -r /usr/share/doc/fzf/examples/completion.bash ]; then
+  source /usr/share/doc/fzf/examples/completion.bash
+fi
+
+# --- Navigation / history stack ---
+eval "$(fasd --init auto)"
+unalias z 2>/dev/null
+eval "$(zoxide init bash)"
+source "$HOME/.local/share/blesh/ble.sh"
+eval "$(atuin init bash)"
+
+# fzf history on Alt-R (keep Ctrl-R for atuin)
+bind '"\er": " \C-u$(__fzf_history__)\e\C-e"'
+
+# --- Debian chroot ---
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+  debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# --- Prompt ---
+case "$TERM" in
+  xterm-color|*-256color) color_prompt=yes ;;
+esac
+
+if [ "${force_color_prompt:-}" ] && command -v tput >/dev/null && tput setaf 1 >/dev/null 2>&1; then
+  color_prompt=yes
+fi
+
+if [ "$color_prompt" = yes ]; then
+  PS1='[\[\e[1;38;2;182;13;13m\]\u\[\e[0m\]@\[\e[1;96m\]\h \[\e[1;93m\]\w\[\e[0m\]]\$ '
+else
+  PS1='[\u@\h \w]\$ '
+fi
+unset color_prompt force_color_prompt
+
+case "$TERM" in
+  xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+esac
+
+# --- ls / colors ---
+if [ -x /usr/bin/dircolors ]; then
+  eval "$(dircolors -b "${HOME}/.dircolors" 2>/dev/null || dircolors -b)"
+  alias ls='ls --color=auto -hF'
+  alias dir='eza -l --no-permissions --no-user --time-style=relative --sort=modified -r --only-dirs'
+  alias vdir='eza -l --header --time-style=long-iso --only-dirs --sort=modified -r'
+  alias grep='grep --color=auto'
+  alias diff='diff --color=auto'
+fi
+
+# --- Aliases ---
+alias histoff='set +o history'
+alias histon='set -o history'
+alias cd='z'        # intentionally kept (interactive-only)
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ll='ls -lh'
+alias l='ls -CF'
+alias la='ls -a --group-directories-first'
+alias lr='ls --recursive'
+alias lt='ls --sort=time -l'
+alias pl='setxkbmap -layout pl'
+alias en='setxkbmap -layout us'
+alias shred='shred -vzun'
+alias pw='pwgen -syn -1'
+alias tn='clear; task next'
+alias clock='tty-clock -c -D -C 3'
+alias exall='exiftool -all= -overwrite_original'
+alias uu='sudo apt update && sudo apt upgrade'
+alias fast='fastfetch'
+alias bye='sudo shutdown now'
+alias argos-on='source "$HOME/venv-argos/bin/activate"'
+alias argos-off='deactivate'
+alias argos="$HOME/venv-argos/bin/argos-translate"
+alias shield='bash ssd_rclone_rsync_backup.sh'
+alias usb='bash flash_rsync_backup.sh'
+alias bat='batcat'
+alias fd='fdfind'
+alias cdwm='vim ~/dwm/config.h'
+alias mdwm='cd ~/dwm && sudo make clean install && cd -'
+alias cst='vim ~/st/config.def.h'
+alias mst='cd ~/st && cp -f config.def.h config.h && make clean && sudo make install && hash -r && cd -'
+alias work-on='sudo cryptsetup open ~/secure/work_vault.img work_vault && sudo mount /dev/mapper/work_vault ~/work_vault'
+alias work-off='sudo umount ~/work_vault && sudo cryptsetup close work_vault'
+alias ncdu='ncdu --color dark'
+alias mp='ncmpcpp'
+alias v='vim'
+alias tree='eza --tree -L 2 --group-directories-first'
+alias sc='sc-im'
+alias viba='vim ~/.bashrc'
+alias soba='source ~/.bashrc'
+alias elf='eza --only-files --icons -l --sort=modified --time-style=relative -r'
+alias clip='xclip -selection clipboard'
+alias bm='bashmount'
+alias wttr='curl wttr.in/50.017077345305175,21.752692000917033'
+alias vmls='kvm-lab-status'
+alias wg-down='sudo wg-quick down wg-sanctum'
+alias wg-up='sudo wg-quick up wg-sanctum'
+
+# --- Optional aliases ---
+[ -r "$HOME/.bash_aliases" ] && source "$HOME/.bash_aliases"
+
+# --- Bash completion ---
+if ! shopt -oq posix; then
+  if [ -r /usr/share/bash-completion/bash_completion ]; then
+    source /usr/share/bash-completion/bash_completion
+  elif [ -r /etc/bash_completion ]; then
+    source /etc/bash_completion
+  fi
+fi
+
+# --- GPG / SSH (single strategy: gpg-agent) ---
+export LANGUAGE=en_US
+export GPG_TTY="$(tty)"
+gpg-connect-agent updatestartuptty /bye >/dev/null
+export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+
+# --- Pager / tools ---
+export LESS='-NR --mouse'
+export LESSHISTFILE=-
+export LESS_TERMCAP_md=$'\e[1;36m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;37m'
+export LESS_TERMCAP_se=$'\e[0m'
+
+export BAT=batcat
+export FZF_DEFAULT_OPTS="
+--height=80%
+--layout=reverse
+--border
+--info=inline
+--preview '${BAT} --style=numbers --color=always --line-range :200 {} 2>/dev/null'
+--preview-window=right:60%:wrap
+"
+
+# --- Functions / extras ---
+[ -r "$HOME/.config/shell/functions.sh" ] && source "$HOME/.config/shell/functions.sh"
+[ -r "$HOME/.config/broot/launcher/bash/br" ] && source "$HOME/.config/broot/launcher/bash/br"
+
+# --- PATH ---
+export PATH="$HOME/.cargo/bin:$PATH"
+

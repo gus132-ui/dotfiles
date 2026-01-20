@@ -1,0 +1,1 @@
+/home/lukasz/dotfiles/.bashrc

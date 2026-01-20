@@ -12,6 +12,7 @@ filetype plugin indent on
 syntax on
 set wrap                 
 set linebreak
+set showtabline=2
 set clipboard=unnamedplus
 set ignorecase
 set incsearch
@@ -30,6 +31,7 @@ nnoremap <leader>v :edit $MYVIMRC<CR>
 nnoremap <leader>s :source $MYVIMRC<CR>
 nnoremap <leader>wf :WikiFiles<CR>
 nnoremap <leader>ws :WikiSearch<CR>
+nnoremap <Leader><Leader> <C-^>
 nnoremap <Leader>ma :SignatureToggleSigns<CR>
 nnoremap <leader>f :Files<CR>
 nnoremap <leader>b :Buffers<CR>
@@ -245,6 +247,7 @@ function! DiaryTodayAndIndex()
 
   " Open today's file
   execute 'edit ' . fnameescape(day_file)
+  setlocal spell spelllang=en_us,pl
 endfunction
 
 command! DiaryToday call DiaryTodayAndIndex()
