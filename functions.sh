@@ -192,3 +192,8 @@ esp() {
         '
 }
 
+vw() {
+  cd "$HOME/vimwiki" || return 1
+  vim index.md
+}
+

@@ -58,4 +58,9 @@ alias wg-down='sudo wg-quick down wg-sanctum' # disable only the WG tunnel and k
 alias wg-up='sudo wg-quick up wg-sanctum' # bring WG back up manually
 alias vzsh='vim ~/.zshrc'
 alias szsh='source ~/.zshrc'
-alias val='vim ~/.config/zsh/aliases.zsh'
+alias val='vim ~/.zsh_aliases'
+alias neo='bridge-sync; notmuch new; neomutt'
+alias nms='notmuch search --limit=25'
+alias nmr='notmuch show --format=text'
+alias nmn='notmuch new'
+

@@ -44,6 +44,10 @@ vnoremap <leader>j :!fmt -w 80<CR>
 nnoremap <leader>rl :call RelLink()<CR>
 nnoremap <leader>bl :call Backlinks()<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
+nnoremap <leader>r :echo expand('%:~:.')<CR>
+nnoremap <leader>t :tabnew<CR>
+nnoremap <leader>o :put _<CR>
+nnoremap <leader>O :put! _<CR>
 
 " === PERSISTENT MACORS ===
 
@@ -70,11 +74,6 @@ let g:vimwiki_list = [{
   \ 'diary_rel_path': 'diary/',
   \ 'diary_index': 'index'
   \ }]
-augroup vimwiki_no_numbers_index
-  autocmd!
-  autocmd FileType vimwiki if expand('%:t') ==# 'index.md' |
-			  \ setlocal nonumber norelativenumber |
-			  \ endif
 augroup END
 nnoremap <leader>wt :DiaryToday<CR>
 nnoremap <leader>wy :DiaryYearIndex<CR>
@@ -92,6 +91,11 @@ augroup Writing
   autocmd FileType markdown,text,vimwiki setlocal spell spelllang=en_us,pl
 augroup END
 
+augroup VimwikiIndexNoNumbers
+  autocmd!
+  autocmd BufWinEnter,WinEnter */index.md if &filetype ==# 'vimwiki' | setlocal nonumber norelativenumber | endif
+augroup END
+
 " Different colors for each Vimwiki header level (terminal example)
 highlight markdownH1 ctermfg=214 gui=bold      " H1: orange
 highlight markdownH2 ctermfg=39  gui=bold      " H2: blue
@@ -100,6 +104,11 @@ highlight markdownH4 ctermfg=177 gui=bold      " H4: pink
 highlight markdownH5 ctermfg=180 gui=bold      " H5: tan
 highlight markdownH6 ctermfg=247 gui=bold      " H6: grey
 autocmd FileType vimwiki nnoremap <buffer> <Space> <Plug>VimwikiToggleListItem
+
+augroup SpellHighlights
+  autocmd!
+  autocmd ColorScheme * hi SpellBad cterm=underline | hi SpellCap cterm=underline | hi SpellRare cterm=underline | hi SpellLocal cterm=underline
+augroup END
 
 let g:wiki_root = expand('~/vimwiki')
 let g:wiki_bat = executable('bat') ? 'bat' : (executable('batcat') ? 'batcat' : '')
@@ -152,15 +161,21 @@ function! s:WikiSearch() abort
         \ . shellescape(query) . ' ' . shellescape(root)
 
   " SAFE preview: use only {1} (file) and {2} (line) as arguments; never inject full match text ({})
-  let preview =
-        \ 'bash -lc ' . shellescape(
-        \   'file="$1"; line="$2"; ' .
-        \   'case "$line" in (""|*[!0-9]*) line=1 ;; esac; ' .
-        \   'end=$((line+200)); ' .
-        \   'batcmd="$3"; ' .
-        \   'if [ -z "$batcmd" ]; then sed -n "${line},${end}p" "$file"; exit 0; fi; ' .
-        \   '"$batcmd" --style=plain --color=always --highlight-line "$line" --line-range "${line}:${end}" "$file"'
-        \ ) . ' _ {1} {2} ' . shellescape(bat)
+let preview =
+      \ 'bash -lc ' . shellescape(
+      \ 'file="$1"; line="$2"; q="$3"; batcmd="$4"; ' .
+      \ 'case "$line" in (""|*[!0-9]*) line=1 ;; esac; ' .
+      \ 'start=$((line-20)); [ $start -lt 1 ] && start=1; ' .
+      \ 'end=$((line+200)); ' .
+      \ 'if [ -n "$batcmd" ]; then ' .
+      \ '  "$batcmd" --style=plain --color=always --highlight-line "$line" --line-range "${start}:${end}" "$file"; ' .
+      \ 'else ' .
+      \ '  sed -n "${start},${end}p" "$file"; ' .
+      \ 'fi ' .
+      \ '| perl -pe ' .
+      \ '''BEGIN{$q=$ENV{Q}//""; $re=quotemeta($q);} ' .
+      \ 'if(length($re)){s/($re)/\e[1;30;43m$1\e[0m/ig}''' 
+      \ ) . ' _ {1} {2} {q} ' . shellescape(bat)
 
   call fzf#run(fzf#wrap({
         \ 'source': rgcmd,
@@ -326,4 +341,73 @@ function! Backlinks() abort
 endfunction
 
 nnoremap <leader>bl :call Backlinks()<CR>
+
+" =========================================================
+" OmniWiki — Obsidian-like live search for ~/vimwiki
+" =========================================================
+command! OmniWiki call s:OmniWiki()
+
+function! s:OmniWiki() abort
+  let root = expand('~/vimwiki')
+  if !isdirectory(root)
+    echoerr 'OmniWiki: wiki root not found: ' . root
+    return
+  endif
+  if !executable('rg')
+    echoerr 'OmniWiki: ripgrep (rg) not installed'
+    return
+  endif
+  if !exists('*fzf#run')
+    echoerr 'OmniWiki: fzf.vim not installed'
+    return
+  endif
+
+  let bat = executable('bat') ? 'bat' : (executable('batcat') ? 'batcat' : '')
+  let preview_sh = expand('~/.vim/bin/omniwiki_preview.sh')
+
+  if !filereadable(preview_sh)
+    echoerr 'OmniWiki: missing preview script: ' . preview_sh
+    return
+  endif
+
+  " NOTE: no --follow (prevents duplicate hits via symlinks)
+  let rg =
+        \ 'rg --column --line-number --no-heading --color=never --smart-case ' .
+        \ '--hidden --glob "!.git/*" ' .
+        \ '{q} ' . shellescape(root) .
+        \ ' | awk ''!seen[$0]++'''
+
+  let preview =
+        \ shellescape(preview_sh) . ' {1} {2} {q} ' . shellescape(bat)
+
+  call fzf#run(fzf#wrap({
+        \ 'source': rg,
+        \ 'sink': function('s:OmniWikiOpen'),
+        \ 'options': [
+        \   '--phony',
+        \   '--query', '',
+        \   '--prompt', 'OmniWiki> ',
+        \   '--delimiter', ':',
+        \   '--with-nth', '1,2,4..',
+        \   '--bind', 'change:reload:' . rg,
+        \   '--preview', preview,
+        \   '--preview-window', 'right:60%',
+        \ ],
+        \ }))
+endfunction
+
+function! s:OmniWikiOpen(line) abort
+  if empty(a:line) | return | endif
+  let parts = split(a:line, ':')
+  if len(parts) < 2 | return | endif
+  execute 'edit ' . fnameescape(parts[0])
+  let lnum = str2nr(parts[1])
+  if lnum > 0
+    execute lnum
+    normal! zz
+  endif
+endfunction
+
+" Optional mapping:
+nnoremap <leader>wo :OmniWiki<CR>
 

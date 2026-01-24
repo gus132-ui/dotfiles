@@ -5,6 +5,8 @@
 
 [[ -o interactive ]] || return
 
+setopt INTERACTIVE_COMMENTS
+
 HISTFILE="$HOME/.zsh_history"
 HISTSIZE=750000
 SAVEHIST=100000
