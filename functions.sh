@@ -46,17 +46,6 @@ fo() {
   )" || return
   [[ -n "$file" ]] && vim -- "$file"
 }
-# Uses fasd to show you the most recently accessed files and then open them with vim
-fr() {
-  local file
-  file="$(
-    fasd -f -r |
-    awk '{print $NF}' |
-    fzf --tac --preview 'batcat --style=numbers --color=always --line-range=:300 {}'
-  )" || return
-
-  [[ -n "$file" ]] && vim -- "$file"
-}
 
 # Directory marks (vifm-style)
 export DIR_MARKS_FILE="${DIR_MARKS_FILE:-$HOME/.dir_marks}"
@@ -77,60 +66,60 @@ jump() {
   [ -d "$dest" ] || { echo "Marked path missing: $dest"; return 1; }
   cd -- "$dest" || return
 }
-
 marks() {
+  if [[ -z "${DIR_MARKS_FILE:-}" ]]; then
+    echo "DIR_MARKS_FILE is not set"
+    return 1
+  fi
   [[ -f "$DIR_MARKS_FILE" ]] || { echo "No marks yet"; return 0; }
 
-  local -a names paths
-  local i line name path key idx
+  local sel mark_name mark_path
 
-  # Load marks into arrays in a stable order (file order)
-  i=0
-  while IFS= read -r line; do
-    [[ -z "$line" || "$line" != *"="* ]] && continue
-    name="${line%%=*}"
-    path="${line#*=}"
-    names[i]="$name"
-    paths[i]="$path"
-    i=$((i+1))
-  done < "$DIR_MARKS_FILE"
+  sel="$(
+    awk -F= 'NF>=2 && $1!="" && $2!="" { printf "%-12s\t%s\n", $1, $2 }' "$DIR_MARKS_FILE" \
+    | fzf \
+      --prompt='mark> ' \
+      --delimiter=$'\t' \
+      --with-nth=1,2 \
+      --nth=1,2 \
+      --preview-window='right,60%' \
+      --preview='bash -lc '"'"'
+        p="{2}"
+        if [ -d "$p" ]; then
+          if command -v eza >/dev/null 2>&1; then
+            eza -la --group-directories-first --sort=modified -r --color=always --time-style=relative \
+              --no-permissions --no-user -- "$p" | head -n 200
+          else
+            ls -A --color=always -- "$p" | head -n 200
+          fi
+        else
+          echo "Missing: $p"
+        fi
+      '"'"''
+  )"
 
-  (( i == 0 )) && { echo "No marks yet"; return 0; }
+  [[ -z "$sel" ]] && return 0
 
-  # Print numbered list
-  printf "\n"
-  for idx in "${!names[@]}"; do
-    printf "%2d) %-10s %s\n" "$((idx+1))" "${names[idx]}" "${paths[idx]}"
-  done
-  printf "\nSelect 1-%d (press Enter/ESC to cancel): " "$i"
+  mark_name="${sel%%$'\t'*}"
+  mark_path="${sel#*$'\t'}"
 
-  # Read one key (digit). Enter cancels.
-  IFS= read -r -n1 key
-  printf "\n"
+  # trim possible padding spaces from printf "%-12s"
+  mark_name="${mark_name%"${mark_name##*[![:space:]]}"}"
 
-  [[ -z "$key" ]] && return 0           # Enter
-  [[ "$key" == $'\e' ]] && return 0     # ESC
-  [[ "$key" =~ ^[0-9]$ ]] || { echo "Not a number."; return 1; }
-
-  idx=$((key-1))
-  (( idx < 0 || idx >= i )) && { echo "Out of range."; return 1; }
-
-  path="${paths[idx]}"
-  [[ -d "$path" ]] || { echo "Missing: $path"; return 1; }
-
-  cd -- "$path" || return
+  [[ -d "$mark_path" ]] || { echo "Missing: $mark_path"; return 1; }
+  cd -- "$mark_path" || return
 }
-
 
 alias j='jump'
 alias m='mark'
 
 # fzf + fasd: choose directory and cd into it
-fad() {
+frd() {
   local dir
   dir="$(
     fasd -d -l 2>/dev/null | fzf \
       --prompt='dir> ' \
+      --tac \
       --preview-window='right,60%' \
       --preview='bash -lc '"'"'
         d="{}"
@@ -138,12 +127,13 @@ fad() {
           echo "Not a directory: $d"
           exit 0
         fi
+if command -v eza >/dev/null 2>&1; then
+  eza -la --sort=modified -r --color=always --time-style=relative \
+    --no-permissions --no-user -- "$d" | head -n 200
+else
+  ls -A --color=always -- "$d" | head -n 200
+fi
 
-        if command -v eza >/dev/null 2>&1; then
-          eza -la --group-directories-first --sort=modified -r --color=always --time-style=relative -- "$d" | head -n 200
-        else
-          ls -la --color=always -- "$d" | head -n 200
-        fi
       '"'"''
   )"
 
@@ -152,13 +142,28 @@ fad() {
 }
 
 # fzf + fasd: choose file and open in vim
-faf() {
+frf() {
   local file
-  file="$(fasd -f -l 2>/dev/null | fzf \
-    --prompt='file> ' \
-    --tac \
-    --preview-window='right,60%' \
-    --preview='batcat --style=plain --color=always --line-range=:300 {} 2>/dev/null || sed -n "1,200p" {}')"
+  file="$(
+    fasd -f -l 2>/dev/null | fzf \
+      --prompt='file> ' \
+      --tac \
+      --preview-window='right,60%' \
+      --preview='bash -lc '"'"'
+        p="{}"
+        if [ -f "$p" ]; then
+          if command -v batcat >/dev/null 2>&1; then
+            batcat --style=plain --color=always --line-range=:300 -- "$p" 2>/dev/null || sed -n "1,200p" -- "$p"
+          elif command -v bat >/dev/null 2>&1; then
+            bat --style=plain --color=always --line-range=:300 -- "$p" 2>/dev/null || sed -n "1,200p" -- "$p"
+          else
+            sed -n "1,200p" -- "$p" 2>/dev/null
+          fi
+        else
+          echo "Not a file: $p"
+        fi
+      '"'"''
+  )"
 
   [[ -z "$file" ]] && return 0
   vim -- "$file"

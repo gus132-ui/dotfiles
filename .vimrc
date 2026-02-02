@@ -48,6 +48,8 @@ nnoremap <leader>r :echo expand('%:~:.')<CR>
 nnoremap <leader>t :tabnew<CR>
 nnoremap <leader>o :put _<CR>
 nnoremap <leader>O :put! _<CR>
+nnoremap <leader>= :m .-2<CR>==
+nnoremap <leader>- :m .+1<CR>==
 
 " === PERSISTENT MACORS ===
 
