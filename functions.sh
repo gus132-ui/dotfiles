@@ -73,18 +73,24 @@ marks() {
   fi
   [[ -f "$DIR_MARKS_FILE" ]] || { echo "No marks yet"; return 0; }
 
-  local sel mark_name mark_path
+  local sel mark_path
 
   sel="$(
-    awk -F= 'NF>=2 && $1!="" && $2!="" { printf "%-12s\t%s\n", $1, $2 }' "$DIR_MARKS_FILE" \
+    awk -F= -v home="$HOME" '
+      NF>=2 && $1!="" && $2!="" {
+        real=$2
+        disp=real
+        sub("^" home "/","~/",disp)     # /home/lukasz/... -> ~/...
+        printf "%-12s\t%s\t%s\n", $1, disp, real
+      }' "$DIR_MARKS_FILE" \
     | fzf \
       --prompt='mark> ' \
       --delimiter=$'\t' \
       --with-nth=1,2 \
       --nth=1,2 \
-      --preview-window='right,60%' \
+      --preview-window='right,40%' \
       --preview='bash -lc '"'"'
-        p="{2}"
+        p="{3}"
         if [ -d "$p" ]; then
           if command -v eza >/dev/null 2>&1; then
             eza -la --group-directories-first --sort=modified -r --color=always --time-style=relative \
@@ -100,11 +106,7 @@ marks() {
 
   [[ -z "$sel" ]] && return 0
 
-  mark_name="${sel%%$'\t'*}"
-  mark_path="${sel#*$'\t'}"
-
-  # trim possible padding spaces from printf "%-12s"
-  mark_name="${mark_name%"${mark_name##*[![:space:]]}"}"
+  mark_path="${sel##*$'\t'}"   # field 3 (real path)
 
   [[ -d "$mark_path" ]] || { echo "Missing: $mark_path"; return 1; }
   cd -- "$mark_path" || return

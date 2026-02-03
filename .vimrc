@@ -88,6 +88,20 @@ augroup PythonIndent
   autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 augroup END
 
+augroup TsvEditing
+  autocmd!
+ autocmd BufRead,BufNewFile *.tsv setfiletype tsv 
+  autocmd FileType tsv setlocal noexpandtab tabstop=8 shiftwidth=0 softtabstop=0
+  autocmd FileType tsv setlocal list listchars=tab:→\ ,trail:·,nbsp:␣
+  autocmd FileType tsv setlocal nowrap
+
+" Optional: quality-of-life for column work
+  autocmd FileType tsv setlocal virtualedit=block
+  autocmd FileType tsv setlocal formatoptions-=t formatoptions-=a
+augroup END
+" Tell Vimwiki that .tsv files are valid wiki targets
+
+
 augroup Writing
   autocmd!
   autocmd FileType markdown,text,vimwiki setlocal spell spelllang=en_us,pl
@@ -98,13 +112,20 @@ augroup VimwikiIndexNoNumbers
   autocmd BufWinEnter,WinEnter */index.md if &filetype ==# 'vimwiki' | setlocal nonumber norelativenumber | endif
 augroup END
 
-" Different colors for each Vimwiki header level (terminal example)
-highlight markdownH1 ctermfg=214 gui=bold      " H1: orange
-highlight markdownH2 ctermfg=39  gui=bold      " H2: blue
-highlight markdownH3 ctermfg=84  gui=bold      " H3: green
-highlight markdownH4 ctermfg=177 gui=bold      " H4: pink
-highlight markdownH5 ctermfg=180 gui=bold      " H5: tan
-highlight markdownH6 ctermfg=247 gui=bold      " H6: grey
+augroup VimwikiHeaderColors
+  autocmd!
+  autocmd VimEnter,ColorScheme * call s:VimwikiHeaderHi()
+augroup END
+
+function! s:VimwikiHeaderHi() abort
+  highlight VimwikiHeader1 ctermfg=214 cterm=bold
+  highlight VimwikiHeader2 ctermfg=39  cterm=bold
+  highlight VimwikiHeader3 ctermfg=84  cterm=bold
+  highlight VimwikiHeader4 ctermfg=177 cterm=bold
+  highlight VimwikiHeader5 ctermfg=180 cterm=bold
+  highlight VimwikiHeader6 ctermfg=247 cterm=bold
+endfunction
+" used to mark - [ ] as - [x] with space
 autocmd FileType vimwiki nnoremap <buffer> <Space> <Plug>VimwikiToggleListItem
 
 augroup SpellHighlights
@@ -412,4 +433,14 @@ endfunction
 
 " Optional mapping:
 nnoremap <leader>wo :OmniWiki<CR>
+
+function! VimwikiLinkHandler(link) abort
+  " Open vfile:... links inside Vim (not xdg-open)
+  if a:link =~# '^vfile:'
+    let l:target = substitute(a:link, '^vfile:', '', '')
+    execute 'edit' fnameescape(l:target)
+    return 1
+  endif
+  return 0
+endfunction
 
