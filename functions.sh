@@ -204,3 +204,6 @@ vw() {
   vim index.md
 }
 
+sclip() {
+	ssh sanctum-wg "$@" | xclip -selection clipboard
+}

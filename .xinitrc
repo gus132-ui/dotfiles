@@ -1,8 +1,6 @@
 #!/bin/sh
-
-# Start user D-Bus
-eval "$(dbus-launch --sh-syntax)" &
-
+# Load X session environment (keyboard, cursor, etc.)
+[ -r "$HOME/.xprofile" ] && . "$HOME/.xprofile"
 # Start GNOME keyring for SecretService
 eval "$(gnome-keyring-daemon --start --components=secrets,ssh)"
 export SSH_AUTH_SOCK
@@ -14,14 +12,12 @@ sleep 1
 xrandr --output HDMI-2 --auto --left-of eDP-1
 xrandr --output eDP-1 --primary
 # ProtonVPN GUI (optional)
-command -v protonvpn-app >/dev/null 2>&1 && protonvpn-app --minimized &
+command -v protonvpn-app >/dev/null 2>&1 && protonvpn-app &
 
 # Notification daemon
 dunst &
 # Cursor + Xresources
-export XCURSOR_THEME=Breeze
-export XCURSOR_SIZE=24
-xrdb -merge ~/.Xresources &
+xrdb -merge ~/.Xresources
 xsetroot -cursor_name left_ptr &
 
 # Touchpad on the laptop disabled as it's behaving erratically sometimes. The red TrackPoint can be used instead. 
@@ -33,7 +29,5 @@ xsettingsd &
 pkill -f espanso >/dev/null 2>&1
 espanso daemon >/tmp/espanso.log 2>&1 &
 
-
 # Start window manager
-exec dwm
-
+exec dbus-run-session dwm

@@ -1,5 +1,4 @@
 #!/bin/sh
-setxkbmap pl &
 numlockx on &
 # status bar
 "$HOME/.local/bin/dwm-status.sh" &
@@ -13,5 +12,3 @@ xset s on
 xset s 300 300          # 5 minutes idle
 pkill xss-lock 2>/dev/null
 xss-lock -v -- slock &
-
-sleep 3; /usr/bin/protonvpn-app &

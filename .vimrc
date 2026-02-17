@@ -52,6 +52,10 @@ nnoremap <leader>= :m .-2<CR>==
 nnoremap <leader>- :m .+1<CR>==
 
 " === PERSISTENT MACORS ===
+let @a = 'ggVG'                    " Select entire buffer
+let @d = 'ggdG'                    " delete entire buffer
+let @w = ':%s/\s\+$//e' . "\<CR>"  " Trim trailing whitespace in whole file
+let @x = '0i# ' . "\<Esc>" . 'j'   " comment text out with #
 
 " === PLUGIN MANAGER ===
 call plug#begin('~/.vim/plugged')
