@@ -28,6 +28,8 @@ xsettingsd &
 # Espanso (start inside X session)
 pkill -f espanso >/dev/null 2>&1
 espanso daemon >/tmp/espanso.log 2>&1 &
+# MPD → MPRIS bridge (allows unified play/pause via playerctl)
+mpDris2 &
 
 # Start window manager
 exec dbus-run-session dwm

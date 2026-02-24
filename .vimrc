@@ -27,7 +27,7 @@ set undodir=~/.vim/undodir
 
 	
 " === KEY BINDINGS ===
-nnoremap <leader>v :edit $MYVIMRC<CR>
+nnoremap <leader>V :edit $MYVIMRC<CR>
 nnoremap <leader>s :source $MYVIMRC<CR>
 nnoremap <leader>wf :WikiFiles<CR>
 nnoremap <leader>ws :WikiSearch<CR>
@@ -50,7 +50,11 @@ nnoremap <leader>o :put _<CR>
 nnoremap <leader>O :put! _<CR>
 nnoremap <leader>= :m .-2<CR>==
 nnoremap <leader>- :m .+1<CR>==
-
+nnoremap <leader>vt :TabVifm<CR>
+nnoremap <leader>vh :SplitVifm<CR>
+nnoremap <leader>ve :EditVifm<CR>
+nnoremap <leader>vv :VsplitVifm<CR>
+nnoremap <leader>vd :DiffVifm<CR>
 " === PERSISTENT MACORS ===
 let @a = 'ggVG'                    " Select entire buffer
 let @d = 'ggdG'                    " delete entire buffer
@@ -69,6 +73,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-surround'
 Plug 'mbbill/undotree'
 Plug 'wellle/targets.vim'
+Plug 'vifm/vifm.vim'
 call plug#end()
 
 colorscheme gruvbox

@@ -207,3 +207,32 @@ vw() {
 sclip() {
 	ssh sanctum-wg "$@" | xclip -selection clipboard
 }
+
+sha8() {
+  sha1sum -- "$1" | cut -c1-8
+}
+# pwpw: attach/detach Bit4id miniLector EVO (25dd:3111) to Windows QES VM (win10-qes)
+
+pwpw-mount() {
+  local vm="win10-qes"
+  sudo virsh -c qemu:///system attach-device "$vm" /dev/stdin <<'EOF'
+<hostdev mode='subsystem' type='usb' managed='yes'>
+  <source>
+    <vendor id='0x25dd'/>
+    <product id='0x3111'/>
+  </source>
+</hostdev>
+EOF
+}
+
+pwpw-umount() {
+  local vm="win10-qes"
+  sudo virsh -c qemu:///system detach-device "$vm" /dev/stdin <<'EOF'
+<hostdev mode='subsystem' type='usb' managed='yes'>
+  <source>
+    <vendor id='0x25dd'/>
+    <product id='0x3111'/>
+  </source>
+</hostdev>
+EOF
+}

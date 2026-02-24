@@ -1,0 +1,52 @@
+# This is a neomutt config for an i2p mail
+# Identity
+set realname = "NAME"
+set from = "ADDRESS@mail.i2p"
+set use_from = yes
+set envelope_from = yes
+
+# Local Maildir
+set mbox_type = Maildir
+set folder = "~/Mail"
+set spoolfile = "+INBOX"
+set record = "+Sent"
+mailboxes +INBOX +Sent
+
+# POP
+set pop_host = "pop://ADDRESS@127.0.0.1:7660/"
+set pop_pass = "PASSWORD"
+set pop_delete = no
+set pop_checkinterval = 60
+# SMTP
+set smtp_url  = "smtp://ADDRESS@mail.i2p@127.0.0.1:7659/"
+set smtp_pass = "PASSWORD"
+
+set ssl_force_tls = no
+set ssl_starttls  = no
+
+set editor = "vim"
+# ------------------------
+# Sidebar
+# ------------------------
+set sidebar_visible = yes
+set sidebar_width = 25
+set sidebar_short_path = yes
+set sidebar_next_new_wrap = yes
+set sidebar_format = "%D%?F? [%F]?%* %?N?%N/? %S"
+
+# ------------------------
+# Vim-like navigation
+# ------------------------
+
+# Index (message list)
+bind index j next-entry
+bind index k previous-entry
+bind index l display-message
+bind index h exit
+
+# Pager (inside an opened message)
+bind pager j next-line
+bind pager k previous-line
+bind pager l view-attachments
+bind pager h exit
+

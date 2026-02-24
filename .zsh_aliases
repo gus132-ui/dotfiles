@@ -61,4 +61,3 @@ alias neo='bridge-sync; notmuch new; neomutt'
 alias nms='notmuch search --limit=25'
 alias nmr='notmuch show --format=text'
 alias nmn='notmuch new'
-
