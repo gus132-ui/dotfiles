@@ -1,0 +1,49 @@
+IMAPStore lukaszmk1405@gmail.com-remote
+Host imap.gmail.com
+Port 993
+User lukaszmk1405@gmail.com
+PassCmd "cat ~/.config/isync/gmail_pw.txt"
+AuthMechs LOGIN
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore lukaszmk1405@gmail.com-local
+Subfolders Verbatim
+Path /home/lukasz/.local/share/mail/lukaszmk1405@gmail.com/
+Inbox /home/lukasz/.local/share/mail/lukaszmk1405@gmail.com/INBOX
+
+Channel lukaszmk1405@gmail.com
+Expunge Both
+Far :lukaszmk1405@gmail.com-remote:
+Near :lukaszmk1405@gmail.com-local:
+Patterns "INBOX" "[Gmail]/Sent Mail" "[Gmail]/Trash" "[Gmail]/All Mail" "[Gmail]/Drafts"
+Create Both
+SyncState *
+MaxMessages 0
+ExpireUnread no
+# End profile
+
+IMAPStore lukasz.kasprzak@pm.me-remote
+Host 127.0.0.1
+Port 1143
+User lukasz.kasprzak@pm.me
+PassCmd "cat ~/.config/isync/bridge_pw.txt"
+AuthMechs LOGIN
+TLSType STARTTLS
+CertificateFile ~/.config/isync/proton-bridge.pem
+
+MaildirStore lukasz.kasprzak@pm.me-local
+Subfolders Verbatim
+Path /home/lukasz/.local/share/mail/lukasz.kasprzak@pm.me/
+Inbox /home/lukasz/.local/share/mail/lukasz.kasprzak@pm.me/INBOX
+
+Channel lukasz.kasprzak@pm.me
+Expunge None
+Far :lukasz.kasprzak@pm.me-remote:
+Near :lukasz.kasprzak@pm.me-local:
+Patterns *
+Create Both
+SyncState *
+MaxMessages 0
+ExpireUnread no
+# End profile
