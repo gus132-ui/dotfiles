@@ -98,7 +98,7 @@ esac
 # ==================================================
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-
+export PATH="$HOME/.local/bin/pip-bins:$PATH"
 export LESS='-NR --mouse'
 export LESSHISTFILE=-
 
@@ -116,7 +116,7 @@ export FZF_DEFAULT_OPTS="
 export GPG_TTY="$(tty)"
 gpg-connect-agent updatestartuptty /bye >/dev/null
 
-export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+# export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
 
 # ---- Aliases ----
 if [[ -r "$HOME/.zsh_aliases" ]]; then
@@ -162,3 +162,7 @@ if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
   source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"

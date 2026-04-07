@@ -23,8 +23,10 @@ set wildmenu
 set background=dark
 set colorcolumn=81
 set undofile
-set undodir=~/.vim/undodir
-
+set undodir=$HOME/.vim/undodir
+set directory=$HOME/.vim/swap
+set backupdir=$HOME/.vim/backup
+	
 	
 " === KEY BINDINGS ===
 nnoremap <leader>V :edit $MYVIMRC<CR>
@@ -79,7 +81,7 @@ call plug#end()
 colorscheme gruvbox
 " ===  VIMWIKI ===
 let g:vimwiki_list = [{
-  \ 'path': '~/vimwiki/',
+  \ 'path': '~/docs/vimwiki/',
   \ 'syntax': 'markdown',
   \ 'ext': '.md',
   \ 'diary_rel_path': 'diary/',
@@ -142,7 +144,7 @@ augroup SpellHighlights
   autocmd ColorScheme * hi SpellBad cterm=underline | hi SpellCap cterm=underline | hi SpellRare cterm=underline | hi SpellLocal cterm=underline
 augroup END
 
-let g:wiki_root = expand('~/vimwiki')
+let g:wiki_root = expand('~/docs/vimwiki')
 let g:wiki_bat = executable('bat') ? 'bat' : (executable('batcat') ? 'batcat' : '')
 
 
@@ -168,7 +170,7 @@ endfunction
 " ---- WikiSearch: grep inside VimWiki with safe preview + jump ----
 command! WikiSearch call s:WikiSearch()
 function! s:WikiSearch() abort
-  let root = get(g:, 'wiki_root', expand('~/vimwiki'))
+  let root = get(g:, 'wiki_root', expand('~/docs/vimwiki'))
   if !isdirectory(root)
     echoerr 'Wiki root not found: ' . root
     return
@@ -236,7 +238,7 @@ function! s:OpenMatch(line) abort
 endfunction
 
 function! DiaryTodayAndIndex()
-  let root = expand('~/vimwiki/diary/')
+  let root = expand('~/docs/vimwiki/diary/')
   let y = strftime('%Y')
   let d = strftime('%Y-%m-%d')
 
@@ -298,7 +300,7 @@ function! DiaryTodayAndIndex()
 endfunction
 
 command! DiaryToday call DiaryTodayAndIndex()
-command! DiaryYearIndex execute 'edit ' . expand('~/vimwiki/diary/') . strftime('%Y') . '/index.md'
+command! DiaryYearIndex execute 'edit ' . expand('~/docs/vimwiki/diary/') . strftime('%Y') . '/index.md'
 
 " =========================================================
 " Markdown link generator: insert [label](relative/path.md)
@@ -357,7 +359,7 @@ function! Backlinks() abort
   endif
 
   " Vault root (adjust if your vault path differs)
-  let l:root = expand('~/vimwiki')
+  let l:root = expand('~/docs/vimwiki')
 
   " Search for markdown links that point to .../<target>
   " Matches: ](something/target.md) and ](target.md)
@@ -375,12 +377,12 @@ endfunction
 nnoremap <leader>bl :call Backlinks()<CR>
 
 " =========================================================
-" OmniWiki — Obsidian-like live search for ~/vimwiki
+" OmniWiki — Obsidian-like live search for ~/docs/vimwiki
 " =========================================================
 command! OmniWiki call s:OmniWiki()
 
 function! s:OmniWiki() abort
-  let root = expand('~/vimwiki')
+  let root = expand('~/docs/vimwiki')
   if !isdirectory(root)
     echoerr 'OmniWiki: wiki root not found: ' . root
     return

@@ -200,7 +200,7 @@ esp() {
 }
 
 vw() {
-  cd "$HOME/vimwiki" || return 1
+  cd "$HOME/docs/vimwiki" || return 1
   vim index.md
 }
 
