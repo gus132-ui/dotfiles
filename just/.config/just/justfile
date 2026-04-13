@@ -1,0 +1,5 @@
+commit msg:
+    cd {{justfile_directory()}} && git add .
+    cd {{justfile_directory()}} && git commit -m "{{msg}}"
+    cd {{justfile_directory()}} && git push
+    cd {{justfile_directory()}} && git log --oneline --graph --decorate -10
