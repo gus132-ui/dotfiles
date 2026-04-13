@@ -16,7 +16,7 @@ Channel lukaszmk1405@gmail.com
 Expunge Both
 Far :lukaszmk1405@gmail.com-remote:
 Near :lukaszmk1405@gmail.com-local:
-Patterns "INBOX" "[Gmail]/Sent Mail" "[Gmail]/Trash" "[Gmail]/All Mail" "[Gmail]/Drafts"
+Patterns *
 Create Both
 SyncState *
 MaxMessages 0
@@ -41,6 +41,31 @@ Channel lukasz.kasprzak@pm.me
 Expunge None
 Far :lukasz.kasprzak@pm.me-remote:
 Near :lukasz.kasprzak@pm.me-local:
+Patterns *
+Create Both
+SyncState *
+MaxMessages 0
+ExpireUnread no
+# End profile
+
+IMAPStore lukas@labunix.xyz-remote
+Host mail.labunix.xyz
+Port 993
+User lukas@labunix.xyz
+PassCmd "pass mailserver/lukas@labunix-pw"
+AuthMechs LOGIN
+TLSType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore lukas@labunix.xyz-local
+Subfolders Verbatim
+Path /home/lukasz/.local/share/mail/lukas@labunix.xyz/
+Inbox /home/lukasz/.local/share/mail/lukas@labunix.xyz/INBOX
+
+Channel lukas@labunix.xyz
+Expunge None
+Far :lukas@labunix.xyz-remote:
+Near :lukas@labunix.xyz-local:
 Patterns *
 Create Both
 SyncState *

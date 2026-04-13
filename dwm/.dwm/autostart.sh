@@ -6,7 +6,8 @@ numlockx on &
 $HOME/.local/bin/bt-init.sh &
 # compositor
 picom --config "$HOME/.config/picom/picom.conf" >/dev/null 2>&1 &
-
+# starting the ssh-tunnels
+$HOME/.local/bin/ssh-tunnel-all &
 # Starts xss-lock to lock screen via slock upon defined time
 xset s on
 xset s 300 300          # 5 minutes idle

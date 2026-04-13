@@ -124,7 +124,7 @@ if [[ -r "$HOME/.zsh_aliases" ]]; then
 fi
 
 # ---- custom functions ----
-[[ -r "$HOME/.config/shell/functions.sh" ]] && source "$HOME/.config/shell/functions.sh"
+[[ -r "$HOME/.zsh_functions" ]] && source "$HOME/.zsh_functions"
 
 # Cursor shapes:
 # block  = normal mode
@@ -166,3 +166,5 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
+
+source $HOME/.local/share/../bin/env
