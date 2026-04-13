@@ -1,0 +1,25 @@
+# vim: filetype=neomuttrc
+# I2P / Postman account
+unset smtp_url
+# Identity
+set realname = "lkz"
+set from = "pai4r@mail.i2p"
+set use_from = yes
+set envelope_from = yes
+
+# Local Maildir
+set folder = "~/.local/share/mail"
+set spoolfile = "+i2p/INBOX"
+set record = "+i2p/Sent"
+set postponed = "+i2p/Drafts"
+set trash = "+i2p/Trash"
+
+unmailboxes *
+mailboxes +i2p/INBOX +i2p/Sent +i2p/Drafts +i2p/Trash
+
+# SMTP via SSH-forwarded i2pd/Postman tunnel
+set smtp_url = "smtp://pai4r@127.0.0.1:7659/"
+set smtp_pass = "`pass show pai4r@mail.i2p`"
+set ssl_force_tls = no
+set ssl_starttls = no
+

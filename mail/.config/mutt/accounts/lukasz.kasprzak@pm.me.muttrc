@@ -1,0 +1,41 @@
+# vim: filetype=neomuttrc
+unset smtp_url
+set from = "lukasz.kasprzak@pm.me"
+set realname = "Łukasz"
+set folder = "~/.local/share/mail/lukasz.kasprzak@pm.me"
+set spoolfile = "+INBOX"
+set record = "+Sent"
+set postponed = "+Drafts"
+set trash = "+Trash"
+set sendmail = "msmtp -a proton"
+set use_from = yes
+set envelope_from = yes
+
+# Sidebar/mailbox list (Proton - local Maildir)
+unmailboxes *
+mailboxes \
+  "+INBOX" \
+  "+Drafts" \
+  "+Sent" \
+  "+Trash" \
+  "+Archive" \
+  "+All Mail" \
+  "+Spam" \
+  "+Starred" \
+  "+Folders/MedicCentre" \
+  "+Folders/XTB" \
+  "+Folders/inFakt" \
+  "+Folders/LabEx" \
+  "+Folders/akw" \
+  "+Folders/Tyniec" \
+  "+Labels/księgowa" \
+  "+Labels/thesis" \
+  "+Labels/dzień skupienia"
+
+set header_cache = "/home/lukasz/.cache/mutt-wizard/lukasz.kasprzak_pm.me/headers"
+set message_cachedir = "/home/lukasz/.cache/mutt-wizard/lukasz.kasprzak_pm.me/bodies"
+set pgp_sign_as = "9932F53FF03E7391BEF446E089D8F97B17FEB4C6"
+
+macro index,pager Ma ";<save-message>=Archive<enter>" "move mail to Proton archive"
+macro index,pager Ca ";<copy-message>=Archive<enter>" "copy mail to Proton archive"
+

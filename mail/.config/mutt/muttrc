@@ -1,0 +1,181 @@
+# vim: filetype=neomuttrc
+
+# ============================================================
+# Base config
+# ============================================================
+
+# Load mutt-wizard defaults first, then override below.
+source /usr/local/share/mutt-wizard/mutt-wizard.muttrc
+
+# Load default account on startup.
+source /home/lukasz/.config/mutt/accounts/lukasz.kasprzak@pm.me.muttrc
+
+
+# ============================================================
+# Account switching
+# ============================================================
+
+macro index,pager i1 '<sync-mailbox><enter-command>source /home/lukasz/.config/mutt/accounts/lukasz.kasprzak@pm.me.muttrc<enter><change-folder>!<enter><check-stats>' "switch to lukasz.kasprzak@pm.me"
+macro index,pager i2 '<sync-mailbox><enter-command>source /home/lukasz/.config/mutt/accounts/lukaszmk1405@gmail.com.muttrc<enter><change-folder>!<enter>;<check-stats>' "switch to lukaszmk1405@gmail.com"
+macro index,pager i3 '<sync-mailbox><enter-command>source /home/lukasz/.config/mutt/accounts/lukas@labunix.xyz.muttrc<enter><change-folder>!<enter><check-stats>' "switch to lukas@labunix.xyz"
+macro index,pager i4 '<sync-mailbox><enter-command>source /home/lukasz/.config/mutt/accounts/pai4r@mail.i2p.muttrc<enter><change-folder>!<enter><check-stats>' "switch to pai4r@mail.i2p"
+
+
+# ============================================================
+# Core index / mailbox behavior
+# ============================================================
+
+set use_threads = yes
+set sort = threads
+set sort_aux = reverse-last-date-received
+set sort_re = yes
+set collapse_all = no
+set strict_threads = yes
+set duplicate_threads = no
+set collapse_unread = no
+set collapse_flagged = no
+
+set hide_missing = yes
+set hide_top_missing = yes
+set maildir_check_cur = yes
+set check_new = yes
+set thorough_search = yes
+set wrap_search = yes
+
+set ascii_chars = yes
+set pipe_decode = yes
+set pipe_decode_weed  = yes
+set implicit_autoview = yes
+auto_view text/html
+
+set attach_save_dir = "~/downloads/mail"
+
+
+# ============================================================
+# Local overrides of mutt-wizard defaults
+# ============================================================
+
+# Override mutt-wizard date format with ISO-style format.
+set date_format = "%Y-%m-%d %H:%M"
+set index_format = "%2C %Z %?X?A& ? %D %-22.22L %s"
+# Override mutt-wizard polling interval.
+set mail_check = 30
+
+set timeout = 30
+set wait_key = no
+set header_cache_backend = "lmdb"
+
+
+# ============================================================
+# Address book
+# ============================================================
+
+set query_command = "khard email --parsable --search-in-source-files %s"
+
+
+
+# ============================================================
+# Notmuch
+# ============================================================
+
+set nm_default_url = "notmuch:///home/lukasz/.local/share/mail"
+set nm_query_type = messages
+
+# Read-only notmuch query prompt.
+macro index \\ "<vfolder-from-query-readonly>" "notmuch: query (read-only)"
+
+
+# ============================================================
+# Sidebar key overrides
+# ============================================================
+
+# Disable mutt-wizard Ctrl-based sidebar bindings; they are awkward in terminal use.
+bind index,pager \Ck noop
+bind index,pager \Cj noop
+bind index,pager \Co noop
+bind index,pager \Cp noop
+bind index,pager \Cn noop
+
+# Use terminal-safe sidebar bindings.
+bind index,pager [ sidebar-prev
+bind index,pager ] sidebar-next
+bind index,pager { sidebar-prev-new
+bind index,pager } sidebar-next-new
+bind index,pager o sidebar-open
+
+# ============================================================
+# Compatibility fixes
+# ============================================================
+
+# Disable broken mutt-wizard WKS macros.
+macro index \eg "<noop>" "disabled broken WKS publish macro"
+macro index \eh "<noop>" "disabled broken WKS confirm macro"
+
+macro index,pager gd "<change-folder>=Drafts<enter>" "go to drafts"
+macro index,pager Ma ";<save-message>=Archive<enter>" "move mail to archive"
+macro index,pager Ca ";<copy-message>=Archive<enter>" "copy mail to archive"
+macro index,pager H "<change-folder>!<enter>" "go back to previous mailbox"
+
+bind index za collapse-thread
+bind index zA collapse-all
+
+# ============================================================
+# UI tweaks
+# ============================================================
+
+set pager_index_lines = 5
+set pager_context = 3
+set pager_stop = yes
+unset markers
+
+unset color_directcolor
+set sidebar_width = 24
+set sidebar_format = "%B%?N? [%N]?"
+
+# --- Base ---
+color normal        color223 color235
+color error         color167 color235
+color message       color223 color235
+
+# --- Status ---
+color status        color235 color214
+
+# --- Index ---
+color index         color223 color235 ".*"
+color index         bold color109 color235 ~N
+color index         color214 color235 ~F
+color index         color245 color235 ~D
+color index         color109 color235 ~T
+
+# --- Index: per-field coloring for unread ---
+color index_author  bold color109 color235 ~N
+color index_subject bold color109 color235 ~N
+color index_date    bold color109 color235 ~N
+
+# --- Index: newest reply in thread (unread + has parent) ---
+color index         bold color108 color235 "~N ~v"
+color index_author  bold color108 color235 "~N ~v"
+color index_subject bold color108 color235 "~N ~v"
+
+# --- Headers ---
+color header        color214 color235 "^Subject:"
+color header        color142 color235 "^From:"
+color header        color109 color235 "^To:"
+color header        color175 color235 "^Date:"
+
+# --- Body ---
+color quoted        color142 color235
+color quoted1       color109 color235
+color quoted2       color175 color235
+color quoted3       color108 color235
+color signature     color245 color235
+
+# --- Sidebar ---
+color sidebar_highlight color235 color214
+color sidebar_new       bold color109 color235
+color sidebar_flagged   color167 color235
+
+# --- Misc ---
+color search        color235 color214
+color tree          color245 color235
+color indicator     color235 color109

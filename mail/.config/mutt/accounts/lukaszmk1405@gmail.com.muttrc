@@ -1,0 +1,36 @@
+# vim: filetype=neomuttrc
+#
+# muttrc file for account lukaszmk1405@gmail.com
+unset smtp_url
+set realname = "lukaszmk1405"
+set from = "lukaszmk1405@gmail.com"
+set use_from = yes
+set envelope_from = yes
+set sendmail = "msmtp -a lukaszmk1405@gmail.com"
+alias me lukaszmk1405 <lukaszmk1405@gmail.com>
+set folder = "~/.local/share/mail/lukaszmk1405@gmail.com"
+set header_cache = "/home/lukasz/.cache/mutt-wizard/lukaszmk1405_gmail.com/headers"
+set message_cachedir = "/home/lukasz/.cache/mutt-wizard/lukaszmk1405_gmail.com/bodies"
+set mbox_type = Maildir
+unset hostname
+source /usr/local/share/mutt-wizard/switch.muttrc
+set spoolfile = "+INBOX"
+set postponed = "+[Gmail]/Drafts"
+set trash = "+[Gmail]/Trash"
+set record = "+[Gmail]/Sent Mail"
+mailboxes \
+  "=INBOX" \
+  "=[Gmail]/All Mail" \
+  "=[Gmail]/Sent Mail" \
+  "=[Gmail]/Trash" \
+  "=[Gmail]/Drafts" \
+  "=[Gmail]/Spam" \
+  "=[Gmail]/Starred" \
+  "=Important Documents" \
+  "=Important mails" \
+  "=Payslips" \
+  "=To read later" \
+  "=Junk"
+macro index,pager Ma ";<save-message>=[Gmail]/All Mail<enter>" "move mail to Gmail archive"
+macro index,pager Ca ";<copy-message>=[Gmail]/All Mail<enter>" "copy mail to Gmail archive"
+

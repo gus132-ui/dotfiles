@@ -1,0 +1,35 @@
+account lukaszmk1405@gmail.com
+host smtp.gmail.com
+port 465
+from lukaszmk1405@gmail.com
+user lukaszmk1405@gmail.com
+passwordeval "pass neomutt/app_pw"
+auth on
+tls on
+tls_trust_file	/etc/ssl/certs/ca-certificates.crt
+logfile /home/lukasz/.local/state/msmtp/msmtp.log
+tls_starttls off
+
+account proton
+host 127.0.0.1
+port 1025
+auth on
+user lukasz.kasprzak@pm.me
+passwordeval "pass proton/bridge_pw"
+tls on
+tls_starttls on
+tls_certcheck off
+from lukasz.kasprzak@pm.me
+
+account lukas@labunix.xyz
+host mail.labunix.xyz
+port 587
+from lukas@labunix.xyz
+user lukas@labunix.xyz
+passwordeval "pass mailserver/lukas@labunix-pw"
+auth on
+tls on
+tls_starttls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile /home/lukasz/.local/state/msmtp/msmtp.log
+account default : lukas@labunix.xyz

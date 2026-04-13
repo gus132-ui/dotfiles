@@ -1,0 +1,18 @@
+# vim: filetype=neomuttrc
+unset smtp_url
+set realname = "Lukasz Kasprzak"
+set from = "lukas@labunix.xyz"
+set use_from = yes
+set envelope_from = yes
+set sendmail = "msmtp -a lukas@labunix.xyz"
+set folder = "~/.local/share/mail/lukas@labunix.xyz"
+set header_cache = "/home/lukasz/.cache/mutt-wizard/lukas_labunix_xyz/headers"
+set message_cachedir = "/home/lukasz/.cache/mutt-wizard/lukas_labunix_xyz/bodies"
+set mbox_type = Maildir
+unset hostname
+source /usr/local/share/mutt-wizard/switch.muttrc
+set spoolfile = "+INBOX"
+set postponed = "+Drafts"
+set trash = "+Trash"
+set record = "+Sent"
+mailboxes "=INBOX" "=Sent" "=Trash" "=Drafts"

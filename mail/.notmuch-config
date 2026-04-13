@@ -1,0 +1,15 @@
+[database]
+path=/home/lukasz/.local/share/mail
+[user]
+name=lukasz kasprzak
+primary_email=lukaszmk1405@gmail.com
+other_mail=lukasz.kasprzak@pm.me
+[new]
+tags=unread;inbox;
+ignore=.mbsyncstate;.uidvalidity
+[search]
+exclude_tags=deleted;spam;
+[maildir]
+synchronize_flags=true
+[crypto]
+gpg_path=gpg

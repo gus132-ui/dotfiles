@@ -2,7 +2,7 @@ IMAPStore lukaszmk1405@gmail.com-remote
 Host imap.gmail.com
 Port 993
 User lukaszmk1405@gmail.com
-PassCmd "cat ~/.config/isync/gmail_pw.txt"
+PassCmd "pass isync/gmail"
 AuthMechs LOGIN
 TLSType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
@@ -27,7 +27,7 @@ IMAPStore lukasz.kasprzak@pm.me-remote
 Host 127.0.0.1
 Port 1143
 User lukasz.kasprzak@pm.me
-PassCmd "cat ~/.config/isync/bridge_pw.txt"
+PassCmd "pass isync/proton-bridge"
 AuthMechs LOGIN
 TLSType STARTTLS
 CertificateFile ~/.config/isync/proton-bridge.pem

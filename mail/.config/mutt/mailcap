@@ -1,0 +1,19 @@
+application/pdf; zathura %s; test=test -n "$DISPLAY"
+
+application/msword; libreoffice %s; test=test -n "$DISPLAY"
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s; test=test -n "$DISPLAY"
+application/vnd.oasis.opendocument.text; libreoffice %s; test=test -n "$DISPLAY"
+application/rtf; libreoffice %s; test=test -n "$DISPLAY"
+
+application/vnd.ms-excel; gnumeric %s; test=test -n "$DISPLAY"
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; gnumeric %s; test=test -n "$DISPLAY"
+application/vnd.oasis.opendocument.spreadsheet; gnumeric %s; test=test -n "$DISPLAY"
+text/csv; gnumeric %s; test=test -n "$DISPLAY"
+
+text/html; w3m -I %{charset} -T text/html %s; copiousoutput
+
+image/jpeg; feh --auto-zoom --scale-down %s; test=test -n "$DISPLAY"
+image/png; feh --auto-zoom --scale-down %s; test=test -n "$DISPLAY"
+image/gif; feh --auto-zoom --scale-down %s; test=test -n "$DISPLAY"
+image/webp; feh --auto-zoom --scale-down %s; test=test -n "$DISPLAY"
+image/*; feh --auto-zoom --scale-down %s; test=test -n "$DISPLAY"
