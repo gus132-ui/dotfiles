@@ -1,0 +1,109 @@
+" You can edit this file by hand.
+" The " character at the beginning of a line comments out the line.
+" Blank lines are ignored.
+
+" The Default color scheme is used for any directory that does not have
+" a specified scheme and for parts of user interface like menus. A
+" color scheme set for a base directory will also
+" be used for the sub directories.
+
+" The standard ncurses colors are:
+" Default = -1 = None, can be used for transparency or default color
+" Black = 0
+" Red = 1
+" Green = 2
+" Yellow = 3
+" Blue = 4
+" Magenta = 5
+" Cyan = 6
+" White = 7
+
+" Light versions of colors are also available (they set bold
+" attribute in terminals with less than 16 colors):
+" LightBlack
+" LightRed
+" LightGreen
+" LightYellow
+" LightBlue
+" LightMagenta
+" LightCyan
+" LightWhite
+
+" Available attributes (some of them can be combined):
+" bold
+" underline
+" reverse or inverse
+" standout
+" italic (on unsupported systems becomes reverse)
+" combine
+" none
+
+" Vifm supports 256 colors you can use color numbers 0-255
+" (requires properly set up terminal: set your TERM environment variable
+" (directly or using resources) to some color terminal name (e.g.
+" xterm-256color) from /usr/lib/terminfo/; you can check current number
+" of colors in your terminal with tput colors command)
+
+" highlight group cterm=attrs ctermfg=foreground_color ctermbg=background_color
+
+highlight clear
+
+" Gruvbox dark base:
+"   bg  = 235 (#282828)
+"   bg2 = 237/239
+"   fg  = 223 (#ebdbb2)
+"   blue = 109, aqua = 108, green = 142, yellow = 214,
+"   orange = 208, red = 167, purple = 175, gray = 244
+
+highlight Win         cterm=none           ctermfg=223  ctermbg=235
+highlight Directory   cterm=bold           ctermfg=109  ctermbg=235
+highlight Link        cterm=bold           ctermfg=214  ctermbg=235
+highlight BrokenLink  cterm=bold           ctermfg=167  ctermbg=235
+highlight HardLink    cterm=none           ctermfg=214  ctermbg=235
+highlight Socket      cterm=bold           ctermfg=175  ctermbg=235
+highlight Device      cterm=bold           ctermfg=167  ctermbg=235
+highlight Fifo        cterm=bold           ctermfg=108  ctermbg=235
+highlight Executable  cterm=bold           ctermfg=142  ctermbg=235
+highlight Selected    cterm=bold           ctermfg=235  ctermbg=208
+highlight CurrLine    cterm=bold,reverse   ctermfg=223  ctermbg=237
+highlight TopLine     cterm=none           ctermfg=235  ctermbg=239
+highlight TopLineSel  cterm=bold           ctermfg=235  ctermbg=142
+highlight StatusLine  cterm=bold           ctermfg=235  ctermbg=239
+highlight WildBox     cterm=none           ctermfg=223  ctermbg=235
+highlight WildMenu    cterm=underline,reverse ctermfg=223 ctermbg=239
+highlight CmdLine     cterm=none           ctermfg=223  ctermbg=235
+highlight ErrorMsg    cterm=none           ctermfg=223  ctermbg=124
+highlight Border      cterm=none           ctermfg=239  ctermbg=235
+highlight OtherLine   cterm=none           ctermfg=223  ctermbg=235
+highlight JobLine     cterm=bold,reverse   ctermfg=235  ctermbg=142
+highlight SuggestBox  cterm=bold           ctermfg=223  ctermbg=237
+highlight CmpMismatch cterm=bold           ctermfg=223  ctermbg=167
+highlight CmpUnmatched cterm=bold          ctermfg=223  ctermbg=142
+highlight CmpBlank    cterm=none           ctermfg=223  ctermbg=235
+highlight AuxWin      cterm=none           ctermfg=223  ctermbg=235
+highlight TabLine     cterm=none           ctermfg=223  ctermbg=235
+highlight TabLineSel  cterm=bold,reverse   ctermfg=223  ctermbg=239
+highlight User1       cterm=none           ctermfg=244  ctermbg=235
+highlight User2       cterm=none           ctermfg=244  ctermbg=235
+highlight User3       cterm=none           ctermfg=244  ctermbg=235
+highlight User4       cterm=none           ctermfg=244  ctermbg=235
+highlight User5       cterm=none           ctermfg=244  ctermbg=235
+highlight User6       cterm=none           ctermfg=244  ctermbg=235
+highlight User7       cterm=none           ctermfg=244  ctermbg=235
+highlight User8       cterm=none           ctermfg=244  ctermbg=235
+highlight User9       cterm=none           ctermfg=244  ctermbg=235
+highlight User10      cterm=none           ctermfg=244  ctermbg=235
+highlight User11      cterm=none           ctermfg=244  ctermbg=235
+highlight User12      cterm=none           ctermfg=244  ctermbg=235
+highlight User13      cterm=none           ctermfg=244  ctermbg=235
+highlight User14      cterm=none           ctermfg=244  ctermbg=235
+highlight User15      cterm=none           ctermfg=244  ctermbg=235
+highlight User16      cterm=none           ctermfg=244  ctermbg=235
+highlight User17      cterm=none           ctermfg=244  ctermbg=235
+highlight User18      cterm=none           ctermfg=244  ctermbg=235
+highlight User19      cterm=none           ctermfg=244  ctermbg=235
+highlight User20      cterm=none           ctermfg=244  ctermbg=235
+highlight OtherWin    cterm=none           ctermfg=223  ctermbg=235
+highlight LineNr      cterm=none           ctermfg=244  ctermbg=235
+highlight OddLine     cterm=none           ctermfg=223  ctermbg=237
+

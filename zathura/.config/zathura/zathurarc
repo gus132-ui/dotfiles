@@ -1,0 +1,32 @@
+### ================================
+### Gruvbox Recolor + Key Discipline
+### ================================
+
+set selection-clipboard clipboard
+set database sqlite
+
+# Recolor
+set recolor true
+set recolor-lightcolor "#1d2021"
+set recolor-darkcolor "#ebdbb2"
+
+# Optional highlight colors
+set highlight-color "rgba(251,241,199,0.35)"
+set highlight-active-color "rgba(250,189,47,0.45)"
+set highlight-fg "rgba(80,73,69,0.8)"
+
+# Remove only the bindings you really want to replace
+unmap R
+unmap r
+unmap f
+unmap F
+
+# Custom bindings
+map R recolor
+map r rotate
+map f adjust_window width
+map F adjust_window best-fit
+
+# Optional link keys
+map fl follow
+map fL display_link

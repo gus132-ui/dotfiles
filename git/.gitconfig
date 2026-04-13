@@ -1,0 +1,10 @@
+[user]
+	email = lukasz.kasprzak@pm.me
+	name = Lukasz Kasprzak
+[core]
+	pager = delta
+[delta]
+	navigate = true
+	side-by-side = true
+[interactive]
+	diffFilter = delta --color-only
