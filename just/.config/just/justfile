@@ -1,5 +1,5 @@
-commit msg:
-    git -C ~/git/dotfiles add .
-    git -C ~/git/dotfiles commit -m "{{msg}}"
-    git -C ~/git/dotfiles push
-    git -C ~/git/dotfiles log --oneline --graph --decorate -10
+commit msg repo=`pwd`:
+    git -C {{repo}} add .
+    git -C {{repo}} commit -m "{{msg}}"
+    git -C {{repo}} push
+    git -C {{repo}} log --oneline --graph --decorate -10
