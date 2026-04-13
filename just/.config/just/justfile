@@ -1,5 +1,5 @@
 commit msg:
-    cd {{justfile_directory()}} && git add .
-    cd {{justfile_directory()}} && git commit -m "{{msg}}"
-    cd {{justfile_directory()}} && git push
-    cd {{justfile_directory()}} && git log --oneline --graph --decorate -10
+    git -C ~/git/dotfiles add .
+    git -C ~/git/dotfiles commit -m "{{msg}}"
+    git -C ~/git/dotfiles push
+    git -C ~/git/dotfiles log --oneline --graph --decorate -10
