@@ -165,3 +165,5 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 export JUST_GLOBAL_JUSTFILE="$HOME/.config/just/justfile"
+
+source /home/lukasz/.config/broot/launcher/bash/br
