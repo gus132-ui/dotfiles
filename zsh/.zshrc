@@ -96,9 +96,6 @@ esac
 # ==================================================
 # Environment
 # ==================================================
-
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/.local/bin/pip-bins:$PATH"
 export LESS='-NR --mouse'
 export LESSHISTFILE=-
 
@@ -167,5 +164,4 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 
-source $HOME/.local/share/../bin/env
 export JUST_GLOBAL_JUSTFILE="$HOME/.config/just/justfile"

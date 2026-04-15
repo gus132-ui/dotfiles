@@ -6,5 +6,9 @@
 [delta]
 	navigate = true
 	side-by-side = true
+	line-numbers = true
+	keep-plus-minus-markers = true
+	diff-so-fancy = false
+	max-line-length = 0
 [interactive]
-	diffFilter = delta --color-only
+	diffFilter = delta

@@ -1,7 +1,7 @@
 #!/bin/sh
 numlockx on &
 # status bar
-"$HOME/.local/bin/dwm-status.sh" &
+"$HOME/.local/bin/dwm-status" &
 # make bluetooth ready on every dwm start
 $HOME/.local/bin/bt-init.sh &
 # compositor

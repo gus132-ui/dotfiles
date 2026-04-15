@@ -136,6 +136,7 @@ mark a ~/docs/work/ARC-PL_main
 mark l ~/docs/work/LKIT_main
 mark D ~/downloads
 mark d ~/docs
+mark h ~/docs/priv/finance/hledger_main
 " ------------------------------------------------------------------------------
 " Commands
 " ------------------------------------------------------------------------------
