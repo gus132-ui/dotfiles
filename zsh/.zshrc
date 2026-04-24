@@ -16,11 +16,13 @@ setopt SHARE_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
 setopt HIST_REDUCE_BLANKS
+setopt EXTENDED_HISTORY
+setopt HIST_VERIFY
 
-HISTIGNORE="pass *"
+HISTORY_IGNORE='(pass *|pass|history|clear|exit|ls|cd|cd ..|..|pwd)'
 
 autoload -Uz compinit
-compinit -u   # -u avoids annoying permission warnings
+compinit -i   # -u avoids annoying permission warnings
 
 # Completion behavior
 setopt AUTO_MENU           # show menu on second TAB
@@ -38,7 +40,7 @@ zstyle ':completion:*' matcher-list \
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' use-cache on
-zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
+zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh"
 
 # ==================================================
 # Keybindings 
@@ -46,17 +48,9 @@ zstyle ':completion:*' cache-path "$HOME/.cache/zsh"
 
 bindkey -v              #  bindkey -e emacs-style keys
 
-bindkey '^[[A' history-search-backward
-bindkey '^[[B' history-search-forward
-
 # ==================================================
 # External tools 
 # ==================================================
-
-# ---- atuin (history/search, owns Ctrl-R) ----
-if command -v atuin >/dev/null; then
-  eval "$(atuin init zsh)"
-fi
 
 # ---- fasd (tracking only, no z) ----
 if command -v fasd >/dev/null; then
@@ -77,6 +71,10 @@ if [[ -f /usr/share/doc/fzf/examples/completion.zsh ]]; then
   source /usr/share/doc/fzf/examples/completion.zsh
 fi
 
+# ---- atuin (history/search, owns Ctrl-R) ----
+if command -v atuin >/dev/null; then
+  eval "$(atuin init zsh)"
+fi
 # ==================================================
 # Prompt 
 # ==================================================
@@ -96,7 +94,13 @@ esac
 # ==================================================
 # Environment
 # ==================================================
-export LESS='-NR --mouse'
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export EDITOR=vim
+export VISUAL=vim
+export LESS='-R --mouse'
+export PAGER=less
 export LESSHISTFILE=-
 
 export BAT=batcat
@@ -105,15 +109,12 @@ export FZF_DEFAULT_OPTS="
 --layout=reverse
 --border
 --info=inline
---preview '${BAT} --style=numbers --color=always --line-range :200 {} 2>/dev/null'
---preview-window=right:60%:wrap
 "
-
+export FZF_CTRL_R_OPTS="--no-preview"
 # ---- GPG / SSH ----
 export GPG_TTY="$(tty)"
 gpg-connect-agent updatestartuptty /bye >/dev/null
-
-# export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+WORDCHARS=${WORDCHARS//[\/._-]}
 
 # ---- Aliases ----
 if [[ -r "$HOME/.zsh_aliases" ]]; then
@@ -146,6 +147,28 @@ zle -N zle-keymap-select
 zle -N zle-line-init
 
 # ==================================================
+# Plumber
+# ==================================================
+export PATH="$HOME/bin:$PATH"
+export XTERM="st"
+export PLUMB_WEB="firefox"
+export PLUMB_TXTWEB="w3m"
+export PLUMB_GOPHER="bombadillo"
+export PLUMB_TXTGOPHER="bombadillo"
+export PLUMB_MEDIA="mpv"
+export PLUMB_PDF="zathura"
+export PLUMB_IMAGE="nsxiv"
+
+# ==================================================
+
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
+
+export JUST_GLOBAL_JUSTFILE="$HOME/.config/just/justfile"
+
+source /home/lukasz/.config/broot/launcher/bash/br
+
+# ==================================================
 # Zsh UX enhancements (must be last)
 # ==================================================
 
@@ -158,12 +181,3 @@ fi
 if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
   source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
-
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-
-export JUST_GLOBAL_JUSTFILE="$HOME/.config/just/justfile"
-
-source /home/lukasz/.config/broot/launcher/bash/br

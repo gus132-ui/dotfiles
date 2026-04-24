@@ -1,0 +1,13 @@
+sfeedpath="$HOME/.sfeed/feeds"
+
+feeds() {
+
+	feed "blog: labunix"            "https://labunix.xyz/posts/index.xml"
+	feed "blog: luke smith"         "https://lukesmith.xyz/index.xml"
+	feed "blog: one peter five"     "https://onepeterfive.com/feed/"
+	feed "blog: saints shall arise" "https://saintsshallarise.blogspot.com/feeds/posts/default?alt=rss"
+	feed "news: pch24"              "https://pch24.pl/feed/"
+	feed "yt: luke smith"      "https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA"
+	feed "yt: mental outlaw"   "https://www.youtube.com/feeds/videos.xml?channel_id=UC7YOGHUfC1Tb6E4pudI9STA"
+ 	feed "gopher: bitreich.org"	"gopher://bitreich.org:70/0/news.atom.xml"
+}

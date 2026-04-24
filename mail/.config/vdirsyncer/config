@@ -16,3 +16,37 @@ type = "carddav"
 url = "http://10.50.0.1:5232/lukasz/"
 username = "lukasz"
 password.fetch = ["command", "pass","vdirsyncer-pw"]
+
+[pair calendar]
+a = "calendar_local"
+b = "calendar_remote"
+collections = [["calendar", "main", "khal-t480"]]
+
+[pair tasks]
+a = "tasks_local"
+b = "tasks_remote"
+collections = [["tasks", "main", "todoman-t480"]]
+
+[storage calendar_local]
+type = "filesystem"
+path = "~/.local/share/pim/calendars/"
+fileext = ".ics"
+
+[storage tasks_local]
+type = "filesystem"
+path = "~/.local/share/pim/tasks/"
+fileext = ".ics"
+
+[storage calendar_remote]
+type = "caldav"
+url = "http://10.50.0.1:5232/lukasz/"
+username = "lukasz"
+password.fetch = ["command", "pass", "vdirsyncer-pw"]
+item_types = ["VEVENT"]
+
+[storage tasks_remote]
+type = "caldav"
+url = "http://10.50.0.1:5232/lukasz/"
+username = "lukasz"
+password.fetch = ["command", "pass", "vdirsyncer-pw"]
+item_types = ["VTODO"]
