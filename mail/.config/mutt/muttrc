@@ -82,7 +82,7 @@ set nm_default_url = "notmuch:///home/lukasz/.local/share/mail"
 set nm_query_type = messages
 
 # Read-only notmuch query prompt.
-macro index \\ "<vfolder-from-query-readonly>" "notmuch: query (read-only)"
+macro index \\ "<vfolder-from-query>" "notmuch: query"
 
 
 # ============================================================
@@ -118,6 +118,15 @@ macro index,pager H "<change-folder>!<enter>" "go back to previous mailbox"
 
 bind index za collapse-thread
 bind index zA collapse-all
+
+# --- notmuch tag operations ---
+bind index,pager + modify-labels
+bind index,pager - modify-labels
+
+# --- show entire thread for current message ---
+bind index,pager <Esc>e entire-thread
+
+macro index,pager A "<modify-labels-then-hide>+archived -inbox\n" "Archive (notmuch)"
 
 # ============================================================
 # UI tweaks

@@ -24,7 +24,7 @@ xsetroot -cursor_name left_ptr &
 xinput disable $(xinput list | awk -F'[=]' '/Touchpad|TouchPad|ELAN/{print $2; exit}')
 # GTK / XSettings bridge (for LibreOffice, GTK apps)
 xsettingsd &
-
+clipmenud &
 # Espanso (start inside X session)
 pkill -f espanso >/dev/null 2>&1
 espanso daemon >/tmp/espanso.log 2>&1 &

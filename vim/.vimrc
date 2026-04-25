@@ -29,34 +29,36 @@ set backupdir=$HOME/.vim/backup
 	
 	
 " === KEY BINDINGS ===
-nnoremap <leader>V :edit $MYVIMRC<CR>
+nnoremap <leader>e :edit $MYVIMRC<CR>
 nnoremap <leader>s :source $MYVIMRC<CR>
-nnoremap <leader>wf :WikiFiles<CR>
-nnoremap <leader>ws :WikiSearch<CR>
+nnoremap <leader>vt :TabVifm<CR>
+nnoremap <leader>vd :DiffVifm<CR>
 nnoremap <Leader><Leader> <C-^>
-nnoremap <Leader>ma :SignatureToggleSigns<CR>
-nnoremap <leader>f :Files<CR>
+nnoremap <leader>fd :Files<CR>
+nnoremap <Leader>m :SignatureToggleSigns<CR>
 nnoremap <leader>b :Buffers<CR>
 nnoremap <leader>hi :History<CR>
 nnoremap <leader>rg :Rg<CR>
 nnoremap <leader>n :NERDTreeToggle<CR>
 nnoremap <leader>hl :set hlsearch!<CR>
-nnoremap <leader>J :%!fmt -w 80<CR>
-vnoremap <leader>j :!fmt -w 80<CR>
+nnoremap <leader>Fm :%!fmt -w 80<CR>
+vnoremap <leader>fm :!fmt -w 80<CR>
 nnoremap <leader>rl :call RelLink()<CR>
 nnoremap <leader>bl :call Backlinks()<CR>
 nnoremap <leader>u :UndotreeToggle<CR>
-nnoremap <leader>r :echo expand('%:~:.')<CR>
+nnoremap <leader>p :echo expand('%:~:.')<CR>
 nnoremap <leader>t :tabnew<CR>
 nnoremap <leader>o :put _<CR>
 nnoremap <leader>O :put! _<CR>
-nnoremap <leader>= :m .-2<CR>==
-nnoremap <leader>- :m .+1<CR>==
-nnoremap <leader>vt :TabVifm<CR>
-nnoremap <leader>vh :SplitVifm<CR>
-nnoremap <leader>ve :EditVifm<CR>
-nnoremap <leader>vv :VsplitVifm<CR>
-nnoremap <leader>vd :DiffVifm<CR>
+nnoremap <leader>k :m .-2<CR>==
+nnoremap <leader>j :m .+1<CR>==
+nnoremap <leader>wf :WikiFiles<CR>
+nnoremap <leader>wo :OmniWiki<CR>
+nnoremap <leader>wt :DiaryToday<CR>
+nnoremap <leader>wy :DiaryYearIndex<CR>
+nnoremap <leader>wi :VimwikiDiaryIndex<CR>
+nnoremap <leader>wn :VimwikiNextDay<CR>
+nnoremap <leader>wp :VimwikiPrevDay<CR>
 " === PERSISTENT MACORS ===
 let @a = 'ggVG'                    " Select entire buffer
 let @d = 'ggdG'                    " delete entire buffer
@@ -88,11 +90,6 @@ let g:vimwiki_list = [{
   \ 'diary_index': 'index'
   \ }]
 augroup END
-nnoremap <leader>wt :DiaryToday<CR>
-nnoremap <leader>wy :DiaryYearIndex<CR>
-nnoremap <leader>wi :VimwikiDiaryIndex<CR>
-nnoremap <leader>wn :VimwikiNextDay<CR>
-nnoremap <leader>wp :VimwikiPrevDay<CR>
 
 augroup PythonIndent
   autocmd!
@@ -147,7 +144,6 @@ augroup END
 let g:wiki_root = expand('~/docs/vimwiki')
 let g:wiki_bat = executable('bat') ? 'bat' : (executable('batcat') ? 'batcat' : '')
 
-
 " === FUNCTIONS ===
 command! WikiFiles call s:WikiFiles()
 function! s:WikiFiles() abort
@@ -158,7 +154,7 @@ function! s:WikiFiles() abort
   call fzf#run(fzf#wrap({
         \ 'source': 'rg --files --hidden --follow --glob "!.git/*" ' . shellescape(root),
         \ 'sink':   function('s:OpenFile'),
-        \ 'options': ['--prompt','WikiFiles> ','--preview',preview,'--preview-window','right:60%'],
+        \ 'options': ['--prompt','WikiFiles> ','--preview',preview,'--preview-window','right:50%'],
         \ }))
 endfunction
 
@@ -167,75 +163,6 @@ function! s:OpenFile(file) abort
   execute 'edit ' . fnameescape(a:file)
 endfunction
 
-" ---- WikiSearch: grep inside VimWiki with safe preview + jump ----
-command! WikiSearch call s:WikiSearch()
-function! s:WikiSearch() abort
-  let root = get(g:, 'wiki_root', expand('~/docs/vimwiki'))
-  if !isdirectory(root)
-    echoerr 'Wiki root not found: ' . root
-    return
-  endif
-  if !executable('rg')
-    echoerr 'ripgrep (rg) not installed'
-    return
-  endif
-  if !exists('*fzf#run')
-    echoerr 'fzf.vim not installed (fzf#run missing)'
-    return
-  endif
-
-  let bat = executable('bat') ? 'bat' : (executable('batcat') ? 'batcat' : '')
-
-  let query = input('Search wiki: ')
-  if empty(query) | return | endif
-
-  " Output format: file:line:col:text
-  let rgcmd =
-        \ 'rg --color=never --column --line-number --no-heading --smart-case --hidden --follow --glob "!.git/*" '
-        \ . shellescape(query) . ' ' . shellescape(root)
-
-  " SAFE preview: use only {1} (file) and {2} (line) as arguments; never inject full match text ({})
-let preview =
-      \ 'bash -lc ' . shellescape(
-      \ 'file="$1"; line="$2"; q="$3"; batcmd="$4"; ' .
-      \ 'case "$line" in (""|*[!0-9]*) line=1 ;; esac; ' .
-      \ 'start=$((line-20)); [ $start -lt 1 ] && start=1; ' .
-      \ 'end=$((line+200)); ' .
-      \ 'if [ -n "$batcmd" ]; then ' .
-      \ '  "$batcmd" --style=plain --color=always --highlight-line "$line" --line-range "${start}:${end}" "$file"; ' .
-      \ 'else ' .
-      \ '  sed -n "${start},${end}p" "$file"; ' .
-      \ 'fi ' .
-      \ '| perl -pe ' .
-      \ '''BEGIN{$q=$ENV{Q}//""; $re=quotemeta($q);} ' .
-      \ 'if(length($re)){s/($re)/\e[1;30;43m$1\e[0m/ig}''' 
-      \ ) . ' _ {1} {2} {q} ' . shellescape(bat)
-
-  call fzf#run(fzf#wrap({
-        \ 'source': rgcmd,
-        \ 'sink': function('s:OpenMatch'),
-        \ 'options': [
-        \   '--delimiter', ':',
-        \   '--with-nth', '1,2,4..',
-        \   '--prompt', 'WikiSearch> ',
-        \   '--preview', preview,
-        \   '--preview-window', 'right:60%',
-        \ ],
-        \ }))
-endfunction
-
-function! s:OpenMatch(line) abort
-  if empty(a:line) | return | endif
-  let parts = split(a:line, ':')
-  if len(parts) < 2 | return | endif
-  let file = parts[0]
-  let lnum = str2nr(parts[1])
-  execute 'edit ' . fnameescape(file)
-  if lnum > 0
-    execute lnum
-    normal! zz
-  endif
-endfunction
 
 function! DiaryTodayAndIndex()
   let root = expand('~/docs/vimwiki/diary/')
@@ -343,7 +270,6 @@ function! RelLink() abort
   execute "normal! i[" . l:label . "](" . l:rel . ")"
 endfunction
 
-nnoremap <leader>rl :call RelLink()<CR>
 
 
 " =========================================================
@@ -373,8 +299,6 @@ function! Backlinks() abort
         \ 0
         \ )
 endfunction
-
-nnoremap <leader>bl :call Backlinks()<CR>
 
 " =========================================================
 " OmniWiki — Obsidian-like live search for ~/docs/vimwiki
@@ -425,7 +349,7 @@ function! s:OmniWiki() abort
         \   '--with-nth', '1,2,4..',
         \   '--bind', 'change:reload:' . rg,
         \   '--preview', preview,
-        \   '--preview-window', 'right:60%',
+        \   '--preview-window', 'right:70',
         \ ],
         \ }))
 endfunction
@@ -443,7 +367,6 @@ function! s:OmniWikiOpen(line) abort
 endfunction
 
 " Optional mapping:
-nnoremap <leader>wo :OmniWiki<CR>
 
 function! VimwikiLinkHandler(link) abort
   " Open vfile:... links inside Vim (not xdg-open)

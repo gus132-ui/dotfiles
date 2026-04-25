@@ -123,7 +123,8 @@ fi
 
 # ---- custom functions ----
 [[ -r "$HOME/.zsh_functions" ]] && source "$HOME/.zsh_functions"
-
+# ---- per-tool functions (XDG) ----
+[[ -r "$HOME/.config/zsh/pass.zsh" ]] && source "$HOME/.config/zsh/pass.zsh"
 # Cursor shapes:
 # block  = normal mode
 # beam   = insert mode

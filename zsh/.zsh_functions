@@ -236,3 +236,10 @@ pwpw-umount() {
 </hostdev>
 EOF
 }
+
+# Show all notmuch tags with message counts, sorted descending
+tags() {
+  notmuch search --output=tags '*' | while read tag; do
+    printf '%5d\t%s\n' "$(notmuch count tag:"$tag")" "$tag"
+  done | sort -rn
+}
